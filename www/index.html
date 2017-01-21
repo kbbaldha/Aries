@@ -7,6 +7,8 @@
         <link rel="stylesheet" href="/resources/demos/style.css">
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script type="text/javascript" src="https://sdk.clarifai.com/js/clarifai-latest.js"></script>
+        <script type="text/javascript" src="js/imageTags.js"></script>
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
@@ -41,6 +43,13 @@
               <li><a href="#" class="icon icon-menu" id="btn-menu">Menu</a></li>
             </ul>
           </nav>
+		  <div id="loader" class="light-background no-display">
+              <img src="img/loading.gif" class="ajax-loader" />
+          </div>
+          <div id="imageTagsParent">
+              <div class="light-background"></div>
+              <div id="imageTags" class="full-background"></div>
+          </div>
           <div id="sideNav">
             <ul>
               <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section1'); $('#btn-menu').click();"><span>Avaliable Items</span></a></li>
@@ -56,6 +65,7 @@
                     <input type="button" class="btn btn btn-primary"  value="Add item" onclick="createNewToDo(dataTable1)"/>
                     <input type="button" class="btn btn btn-primary"  value="Move selected to order" onclick="moveToShoppingCart(dataTable2)"/>
                     <input type="button" class="btn btn btn-primary"  value="Deleted items" onclick="removeCompletedTasks(dataTable1)"/>
+					<input type="button" class="btn btn btn-primary" value="Get Tags" onclick="getTags(pictureSource.PHOTOLIBRARY)" />
                     <br/><br/>
                     <div id="dialog" title="Basic dialog" style = "display:none">
                         <p>Item Name cannot be empty</p>
