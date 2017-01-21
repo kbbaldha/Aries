@@ -3,7 +3,7 @@ var destinationType; // sets the format of returned value
 var imageText;
 // Wait for PhoneGap to connect with the device
 //
-document.addEventListener("deviceready", onDeviceReady2, false);
+//document.addEventListener("deviceready", onDeviceReady2, false);
 // PhoneGap is ready to be used!
 //
 function onDeviceReady2() {
