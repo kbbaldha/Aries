@@ -1,3 +1,87 @@
+    var url = "http://10.136.34.148:8042";
+    var familyid = "";
+
+    function signInToServer(name){
+         name = '{"familyname" : "myFamily1"}';
+         $.ajax({
+         type: "POST",
+         url: url + "/login",
+         data: JSON.stringify(name),
+         crossDomain: false,
+         contentType: "json",
+         success: function (result) {
+             familyid = result[0]._id; 
+             refreshFeed();
+         },
+         error: function(xhr,status,error){
+         },
+         dataType: "json"
+      });
+      setInterval(refreshFeed,5000);
+    }
+
+    function refreshFeed(){
+            $.ajax({
+                type: "GET",
+                url: url + "/family/" + familyid,
+                crossDomain: true,
+                contentType: "json",
+                success: function (result) {
+                    updateLocalStorage(result);
+                },
+                error: function(xhr,status,error){
+                },
+                dataType: "json"
+            });
+        }
+
+        function updateLocalStorage(result){
+            if(result != null && result != undefined && result.fridgeList != null){
+                fridgeList = result.fridgeList;
+                var todoArray = {};
+                for(var i = 0; i < fridgeList.length; i++){
+                    todoArray["row" + i] = {
+                        text:fridgeList[i].product.name,
+                        Quantity:fridgeList[i].quantity,
+                        barcode : fridgeList[i].product.barcode
+                    }
+                }
+                window.localStorage.setItem("todoList", JSON.stringify(todoArray));
+            }
+
+            if(result != null && result != undefined && result.productList != null){
+                products = result.productList;
+                var productListArray = {};
+                for(var i = 0; i < products.length; i++){
+                    productListArray["row" + i] = {
+                        check: false,
+                        text: products[i].name,
+                        Quantity: products[i].totalConsumed,
+                        barcode : products[i].barcode
+                    }
+                }
+                window.localStorage.setItem("productList", JSON.stringify(productListArray));
+            }
+
+            if(result != null && result != undefined && result.garbageList != null){
+                garbages = result.garbageList;
+                var garbageListArray = {};
+                for(var i = 0; i < garbages.length; i++){
+                    garbageListArray["row" + i] = {
+                        check:false,
+                        text: garbages[i].product.name,
+                        Quantity: garbages[i].quantity,
+                        barcode : garbages[i].product.barcode
+                    }
+                }
+                window.localStorage.setItem("garbageList", JSON.stringify(garbageListArray));
+            }
+            loadToDoList(); 
+            loadGarbageList(); 
+            loadProductList(); 
+        }
+
+
     function toggle_visibility(id1,id2,id3) {
             $("div[id^='Section']").hide();
             $("#" + id1).show();
@@ -6,60 +90,57 @@
             document.addEventListener('deviceready', function () {
                 // basic usage
                 TTS
-                    .speak('I have Successfully added ' + text, function () {
-                        
+                    .speak('I have Successfully added ', function () {
                     }, function (reason) {
-                        
                     });
             }, false);
 
 
             function scan(){
-                console.log("clicked");
                 cordova.plugins.barcodeScanner.scan(function(result){
-                addItemToKitchen(result.text);
-                speak(result.text);
+                    addItemToKitchen(result.text);
+                    speak(result.text);
                 },function(error){
-                alert(JSON.stringify(error));
+                    alert(JSON.stringify(error));
                 });
             }
 
-            function createNewToDo() {
-            var todoDictionary = {};
-
-            // prompt the user to enter to-do
+        function createNewToDo(div) {
+            var kitchenList = {};
             var todo = prompt("Add item to your list","")
                 if (todo != null) {
-                if (todo == "") {
-                    $( function() {
-                        $( "#dialog" ).dialog({
-                        height: 100,
-                        modal: true,
-                        open: function(event, ui){
-                            setTimeout("$('#dialog').dialog('close')",3000);
-                        }
-                        }, "Alert", "Alert");
-                    });
-                } else {
-                    addItemToKitchen(todo);
-                }
+                    if (todo == "") {
+                        $( function() {
+                            $( "#dialog" ).dialog({
+                            height: 100,
+                            modal: true,
+                            open: function(event, ui){
+                                setTimeout("$('#dialog').dialog('close')",3000);
+                            }
+                            }, "Alert", "Alert");
+                        });
+                    } else {
+                        addItemToKitchen(todo,div);
+                    }
             }
         }
 
-        function addItemToKitchen(todo){
-            todoDictionary = {
+        function addItemToKitchen(todo,div){
+            kitchenList = {
                     check: 0,
-                    text: todo
+                    text: todo,
+                    Quantity: 1,
+                    barcode:""
             };
-            addTableRow(todoDictionary, false);
+            addTableRow(kitchenList, false, div);
             speak(todo);
         }
 
         var rowID = 0;
 
-        function addTableRow(todoDictionary, appIsLoading) {
+        function addTableRow(kitchenList, appIsLoading, div) {
             rowID += 1;
-            var table = document.getElementById("dataTable");
+            var table = document.getElementById(div);
             var rowCount = table.rows.length;
             var row = table.insertRow(rowCount);
 
@@ -67,7 +148,7 @@
             var element1 = document.createElement("input");
             element1.type = "checkbox";
             element1.name = "chkbox[]";
-            element1.checked = todoDictionary["check"];
+            element1.checked = kitchenList["check"];
             element1.setAttribute("onclick", "checkboxClicked()");
             cell1.style = "width:20% !important";
             cell1.appendChild(element1);
@@ -75,26 +156,26 @@
 
             var cell2 = row.insertCell(1);
             var element2 = document.createElement("Label");
-            element2.setAttribute("for",todoDictionary["text"]);
-            element2.innerHTML = todoDictionary["text"];
+            element2.setAttribute("for",kitchenList["text"]);
+            element2.innerHTML = kitchenList["text"];
             element2.name = "txtbox[]";
             element2.class = "contenttd";
             element2.id = "text" + rowID;
-            element2.setAttribute("onchange", "saveToDoList()");
+            element2.setAttribute("onchange", "saveToDoList("+ div + ")");
             cell2.style = "width:50% !important";
             cell2.appendChild(element2);
 
             var cell3 = row.insertCell(2);
             var element3 = document.createElement("input");
-            console.log("todo " + todoDictionary["Quantity"]);
-            if(todoDictionary["Quantity"] == null || todoDictionary["Quantity"] == undefined){
+            console.log("todo " + kitchenList["Quantity"]);
+            if(kitchenList["Quantity"] == null || kitchenList["Quantity"] == undefined){
                 element3.setAttribute("value",1);
             }else{
-                element3.setAttribute("value", todoDictionary["Quantity"]);
+                element3.setAttribute("value", kitchenList["Quantity"]);
             }
             element3.name = "txtbox[]";
             element3.id = "Quantity" + rowID;
-            element3.setAttribute("onchange", "saveToDoList()");
+            element3.setAttribute("onchange", "saveToDoList("+ div + ")");
             element3.style = "width:50%";
             cell3.style = "width:30% !important";
             cell3.appendChild(element3);
@@ -102,8 +183,8 @@
 
 
             // update the UI and save the to-do list
-            checkboxClicked();
-            saveToDoList();
+            checkboxClicked(div);
+            saveToDoList(div);
 
             if (!appIsLoading) alert("Task Added Successfully.");
         }
@@ -111,8 +192,8 @@
 
         // add the strike-through styling to completed tasks
 
-        function checkboxClicked() {
-            var table = document.getElementById("dataTable");
+        function checkboxClicked(div) {
+            var table = document.getElementById(div);
             var rowCount = table.rows.length;
 
             // loop through all rows of the table
@@ -134,27 +215,25 @@
             }
 
             // save the to-do list
-            saveToDoList();
+            saveToDoList(div);
         }
 
-
-        // view the content of the selected row
         function editSelectedRow(todoTextField) {
             console.log(todoTextField);
         }
 
 
         // delete the selected row
-        function deleteSelectedRow(deleteButton) {
+        function deleteSelectedRow(deleteButton, div) {
             var p = deleteButton.parentNode.parentNode;
             p.parentNode.removeChild(p);
-            saveToDoList();
+            saveToDoList(div);
         }
 
 
         // remove completed tasks
-        function removeCompletedTasks() {
-            var table = document.getElementById("dataTable");
+        function removeCompletedTasks(div) {
+            var table = document.getElementById(div);
             var rowCount = table.rows.length;
 
             // loop through all rows of the table
@@ -168,21 +247,18 @@
                     i--;
                 }
             }
-
-            // save the to-do list
-            saveToDoList();
-
+            saveToDoList(div);
             alert("Completed Tasks Were Removed Successfully.");
         }
 
 
         // save the to-do list
-        function saveToDoList() {
+        function saveToDoList(div) {
             var todoArray = {};
             var checkBoxState = 0;
             var textValue = "";
 
-            var table = document.getElementById("dataTable");
+            var table = document.getElementById(div);
             var rowCount = table.rows.length;
 
             if (rowCount != 0) {
@@ -220,44 +296,71 @@
             window.localStorage.setItem("todoList", JSON.stringify(todoArray));
         }
 
+
         // load the to-do list
         function loadToDoList() {
-            // use the local storage API load the JSON formatted to-do list, and decode it
             var theList = JSON.parse(window.localStorage.getItem("todoList"));
             if (null == theList || theList == "null") {
-                deleteAllRows();
+                deleteAllRows("dataTable1");
             } else {
                 var count = 0;
                 for (var obj in theList) {
                     count++;
                 }
 
-                // remove any existing rows from the table
-                deleteAllRows();
-
-                // loop through the to-dos
+                deleteAllRows("dataTable1");
                 for (var i = 0; i < count; i++) {
-                    // adding a row to the table for each one
-                    addTableRow(theList["row" + i], true);
+                    addTableRow(theList["row" + i], true, "dataTable1");
                 }
             }
         }
 
-        // delete all the rows
-        function deleteAllRows() {
-            var table = document.getElementById("dataTable");
+        // load the to-do list
+        function loadGarbageList() {
+            var theList = JSON.parse(window.localStorage.getItem("garbageList"));
+            if (null == theList || theList == "null") {
+                deleteAllRows("dataTable2");
+            } else {
+                var count = 0;
+                for (var obj in theList) {
+                    count++;
+                }
+
+                deleteAllRows("dataTable2");
+                for (var i = 0; i < count; i++) {
+                    addTableRow(theList["row" + i], true, "dataTable2");
+                }
+            }
+        }
+
+    // load the to-do list
+            function loadProductList() {
+                var theList = JSON.parse(window.localStorage.getItem("productList"));
+                if (null == theList || theList == "null") {
+                    deleteAllRows("dataTable3");
+                } else {
+                    var count = 0;
+                    for (var obj in theList) {
+                        count++;
+                    }
+
+                    deleteAllRows("dataTable3");
+                    for (var i = 0; i < count; i++) {
+                        addTableRow(theList["row" + i], true, "dataTable3");
+                    }
+                }
+            }
+
+        function deleteAllRows(div) {
+            var table = document.getElementById(div);
             var rowCount = table.rows.length;
 
-            // loop through all rows of the table
             for (var i = 0; i < rowCount; i++) {
-                // delete the row
                 table.deleteRow(i);
                 rowCount--;
                 i--;
             }
-
-            // save the to-do list
-            saveToDoList();
+            saveToDoList(div);
         }
 
         function toggle_sidebar()
@@ -274,14 +377,14 @@
         function onLoad() {
             document.addEventListener("deviceready", onDeviceReady, false);
             }
-            function onDeviceReady() {
+        
+        function onDeviceReady() {
             window.plugins.tts.startup(startupWin, fail);
             pictureSource = navigator.camera.PictureSourceType;
             destinationType = navigator.camera.DestinationType;
         }
 
         function startupWin(result) {
-            // When result is equal to STARTED we are ready to play
             TTS.STARTED==2
             if (result == 2) {
                 window.plugins.tts.getLanguage(win, fail);
@@ -312,7 +415,7 @@
         var langOption = document.createElement("OPTION") 
         langOption.innerText = lang; 
         langOption.value = loc;
-            langs.options.add(langOption); 
+            langs.options.add(langOption);
     }
     
     function changeLang() {

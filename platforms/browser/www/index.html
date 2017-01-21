@@ -22,7 +22,7 @@
         <script src="http://www.w3schools.com/lib/w3data.js"></script>
     </head>
 
-      <body onload="loadToDoList()">
+      <body onload="loadToDoList(); signInToServer('myFamily');">
          
             <!--<div w3-include-html="nav.html"></div> 
             <div w3-include-html="kitchenList.html"></div> 
@@ -43,19 +43,19 @@
           </nav>
           <div id="sideNav">
             <ul>
-              <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section1');"><span>Avaliable Items</span></a></li>
-              <li><a href="#" class="icon icon-home" onclick="toggle_visibility('Section2');"><span>Need to Order</span></a></li>
-              <li><a href="#" class="icon icon-articles" onclick="scan(); $('#btn-menu').click()"><span>Scan Using Barcode</span></a></li>
-              <li><a href="#" class="icon icon-social" onclick="getPhoto(pictureSource.CAMERA); $('#btn-menu').click()"><span>Scan Using OCR</span></a></li>
-              <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section3');"><span>My Purchase History</span></a></li>
+              <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section1'); $('#btn-menu').click();"><span>Avaliable Items</span></a></li>
+              <li><a href="#" class="icon icon-home" onclick="toggle_visibility('Section2');$('#btn-menu').click();"><span>Need to Order</span></a></li>
+              <li><a href="#" class="icon icon-articles" onclick="scan(); $('#btn-menu').click();"><span>Scan Using Barcode</span></a></li>
+              <li><a href="#" class="icon icon-social" onclick="getPhoto(pictureSource.CAMERA); $('#btn-menu').click();"><span>Scan Using OCR</span></a></li>
+              <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section3');$('#btn-menu').click();"><span>My Purchase History</span></a></li>
             </ul>
           </div>
             <div name = "section1 adjustheight" id="Section1" style="margin-top:5% !important">
                     <h1>Avaliable Items in Kitchen</h1>
                     <div style="text-align:center">
-                    <input type="button" class="btn btn btn-primary"  value="Add item" onclick="createNewToDo()"/>
-                    <input type="button" class="btn btn btn-primary"  value="Move selected to order" onclick="createNewToDo()"/>
-                    <input type="button" class="btn btn btn-primary"  value="Deleted items" onclick="removeCompletedTasks()"/>
+                    <input type="button" class="btn btn btn-primary"  value="Add item" onclick="createNewToDo(dataTable1)"/>
+                    <input type="button" class="btn btn btn-primary"  value="Move selected to order" onclick="moveToShoppingCart(dataTable2)"/>
+                    <input type="button" class="btn btn btn-primary"  value="Deleted items" onclick="removeCompletedTasks(dataTable1)"/>
                     <br/><br/>
                     <div id="dialog" title="Basic dialog" style = "display:none">
                         <p>Item Name cannot be empty</p>
@@ -74,7 +74,7 @@
                         </table>
                     </div>
                     <div class="tbl-content">
-                        <table cellpadding="0" cellspacing="0" border="0" id="dataTable">
+                        <table cellpadding="0" cellspacing="0" border="0" id="dataTable1">
                         </table>
                     </div>
                     </section>
@@ -87,8 +87,8 @@
                     </div>
                     <div style="text-align:center">
                     
-                    <input type="button" class="btn btn btn-primary"  value="Place Order" onclick="createNewToDo()"/>
-                    <input type="button" class="btn btn btn-primary"  value="Delete items" onclick="removeCompletedTasks()"/>
+                    <input type="button" class="btn btn btn-primary"  value="Place Order" onclick="createNewToDo(dataTable2)"/>
+                    <input type="button" class="btn btn btn-primary"  value="Delete items" onclick="removeCompletedTasks(dataTable2)"/>
                     <br/><br/>
                     <div id="dialog" title="Basic dialog" style = "display:none">
                         <p>Item Name cannot be empty</p>
@@ -107,7 +107,7 @@
                         </table>
                     </div>
                     <div class="tbl-content">
-                        <table cellpadding="0" cellspacing="0" border="0" id="dataTable">
+                        <table cellpadding="0" cellspacing="0" border="0" id="dataTable2">
                         </table>
                     </div>
                     </section>
@@ -118,8 +118,8 @@
                     <div id="sidebar" style="position: fixed; display: inline-block; top: 0px; height: 100%; width: 200px; left: -200px; background-color: black; transition: all 0.5s ease-in-out;">
                     </div>
                     <div style="text-align:center">
-                    <input type="button" class="btn btn btn-primary"  value="Add item" onclick="createNewToDo()"/>
-                    <input type="button" class="btn btn btn-primary"  value="Move selected to order" onclick="createNewToDo()"/>
+                    <input type="button" class="btn btn btn-primary"  value="Add item" onclick="createNewToDo(dataTable3)"/>
+                    <input type="button" class="btn btn btn-primary"  value="Move selected to order" onclick="createNewToDo(dataTable3)"/>
                     
                     <br/><br/>
                     <div id="dialog" title="Basic dialog" style = "display:none">
@@ -138,7 +138,7 @@
                     </table>
                     </div>
                     <div class="tbl-content">
-                    <table cellpadding="0" cellspacing="0" border="0" id="dataTable">
+                    <table cellpadding="0" cellspacing="0" border="0" id="dataTable3">
                     </table>
                     </div>
                     </section>
