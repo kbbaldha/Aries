@@ -132,10 +132,39 @@
                     Quantity: 1,
                     barcode:""
             };
-            addTableRow(kitchenList, false, div);
+			addToServer(kitchenList,"");
+			refreshFeed();
+            //addTableRow(kitchenList, false, div);
             speak(todo);
         }
-
+		function generateData(res,str) {
+			var result = res;
+			data = {
+				itemList: [
+				{
+					name: result.text
+				}
+				]
+			}
+			return data;
+		}
+		
+		
+		function addToServer(res,str){
+			var data = generateData(res,str);
+			$.ajax({
+				type: "POST",
+				url: url + "/family/" + familyid + "/addToFridge",
+				data: data,
+				crossDomain: true,
+				dataType: "json",
+				success: function (result) {
+				},
+				error: function(xhr,status,error){
+				},
+				dataType: "json"
+			});
+		}
         var rowID = 0;
 
         function addTableRow(kitchenList, appIsLoading, div) {
