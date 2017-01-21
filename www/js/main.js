@@ -1,4 +1,5 @@
     var url = "http://10.136.34.148:8042";
+	//var url = "http://45.79.223.108:8042";
     var familyid = "";
 
     function signInToServer(name){

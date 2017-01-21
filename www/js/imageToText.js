@@ -28,7 +28,7 @@ function getTextFromImage(imageURI) {
           }
         ]
     }
-
+    $('#loader').show();
    // alert(imageURI);
     //$.support.cors = true;
      $.ajax({
@@ -39,17 +39,20 @@ function getTextFromImage(imageURI) {
          contentType: "json",
          success: function (result) {
              //alert(result.responses[0].textAnnotations[0].description);
-             try{
+             try {
+                 $('#loader').hide();
                  imageText = result.responses[0].textAnnotations[0].description;
-                 document.getElementById('result').innerHTML = imageText;
+                 //document.getElementById('result').innerHTML = imageText;
 
                 var editedData = prompt("Please edit and enhance the information", imageText);
                 if (editedData != null) {
-                    addItemToKitchen(editedData);
+                    
+                    addToServer({ text: editedData });
+                    addItemToKitchen(editedData, "datatable1");
                 }
              }
              catch (err) {
-                 alert(JSON.stringify(result));
+                 alert(err);
              }
          },
          error: function(xhr,status,error){
@@ -69,7 +72,9 @@ function onPhotoURISuccess(imageURI) {
 
 function getPhoto(source) {
     // Retrieve image file location from specified source
-	//alert(source);;
+    //alert(source);;
+    
+    //getPhotoURI(pictureSource.PHOTOLIBRARY, onPhotoURISuccess);
 	getPhotoURI(source, onPhotoURISuccess);
     
 }
