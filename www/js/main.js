@@ -87,13 +87,13 @@
             $("#" + id1).show();
             }
 
-            document.addEventListener('deviceready', function () {
+            /*document.addEventListener('deviceready', function () {
                 // basic usage
                 TTS
                     .speak('I have Successfully added ', function () {
                     }, function (reason) {
                     });
-            }, false);
+            }, false);*/
 
 
             function scan(){

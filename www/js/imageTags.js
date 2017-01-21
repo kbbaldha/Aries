@@ -4,6 +4,7 @@
   );
 
 function getTags(source) {
+	
     getPhotoURI(source,getImageTags);
 }
 var tags;
