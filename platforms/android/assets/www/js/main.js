@@ -17,7 +17,7 @@
          },
          dataType: "json"
       });
-      setInterval(refreshFeed,5000);
+      setInterval(refreshFeed,10000);
     }
 
     function refreshFeed(){
@@ -36,11 +36,19 @@
         }
 
         function updateLocalStorage(result){
+            var theList = JSON.parse(window.localStorage.getItem("todoList"));
+            var check = 0;
             if(result != null && result != undefined && result.fridgeList != null){
                 fridgeList = result.fridgeList;
                 var todoArray = {};
                 for(var i = 0; i < fridgeList.length; i++){
+                    if(theList != null && theList[i]!= null && theList[i].check != null ){
+                        check = theList[i].check;
+                    }else{
+                        check = 0;
+                    }
                     todoArray["row" + i] = {
+                        check: check,
                         text:fridgeList[i].product.name,
                         Quantity:fridgeList[i].quantity,
                         barcode : fridgeList[i].product.barcode
@@ -49,12 +57,18 @@
                 window.localStorage.setItem("todoList", JSON.stringify(todoArray));
             }
 
+            theList = JSON.parse(window.localStorage.getItem("productList"));
             if(result != null && result != undefined && result.productList != null){
                 products = result.productList;
                 var productListArray = {};
                 for(var i = 0; i < products.length; i++){
+                    if(theList != null && theList[i]!= null && theList[i].check != null ){
+                        check = theList[i].check;
+                    }else{
+                        check = 0;
+                    }
                     productListArray["row" + i] = {
-                        check: false,
+                        check: check,
                         text: products[i].name,
                         Quantity: products[i].totalConsumed,
                         barcode : products[i].barcode
@@ -63,12 +77,18 @@
                 window.localStorage.setItem("productList", JSON.stringify(productListArray));
             }
 
+            theList = JSON.parse(window.localStorage.getItem("garbageList"));
             if(result != null && result != undefined && result.garbageList != null){
                 garbages = result.garbageList;
                 var garbageListArray = {};
                 for(var i = 0; i < garbages.length; i++){
+                    if(theList != null && theList[i]!= null && theList[i].check != null ){
+                        check = theList[i].check;
+                    }else{
+                        check = 0;
+                    }
                     garbageListArray["row" + i] = {
-                        check:false,
+                        check:check,
                         text: garbages[i].product.name,
                         Quantity: garbages[i].quantity,
                         barcode : garbages[i].product.barcode
@@ -85,25 +105,16 @@
     function toggle_visibility(id1,id2,id3) {
             $("div[id^='Section']").hide();
             $("#" + id1).show();
-            }
+    }
 
-            /*document.addEventListener('deviceready', function () {
-                // basic usage
-                TTS
-                    .speak('I have Successfully added ', function () {
-                    }, function (reason) {
-                    });
-            }, false);*/
-
-
-            function scan(){
-                cordova.plugins.barcodeScanner.scan(function(result){
-                    addItemToKitchen(result.text);
-                    speak(result.text);
-                },function(error){
-                    alert(JSON.stringify(error));
-                });
-            }
+        function scan(){
+            cordova.plugins.barcodeScanner.scan(function(result){
+                addItemToKitchen(result.text, "dataTable1",true);
+                speak(result.text);
+            },function(error){
+                alert(JSON.stringify(error));
+            });
+        }
 
         function createNewToDo(div) {
             var kitchenList = {};
@@ -125,18 +136,32 @@
             }
         }
 
-        function addItemToKitchen(todo,div){
+        function addItemToKitchen(todo,div,isbar){
             kitchenList = {
                     check: 0,
                     text: todo,
                     Quantity: 1,
                     barcode:""
             };
-			addToServer(kitchenList,"");
-			refreshFeed();
-            //addTableRow(kitchenList, false, div);
+            if(div != null && div != ""){
+                addTableRow(kitchenList, false, div, isbar);
+			    addToServer(kitchenList,"");
+            }
             speak(todo);
         }
+
+        function addItemToKitchenWithOCR(todo,div,isbar,bar){
+            kitchenList = {
+                    check: 0,
+                    text: "",
+                    Quantity: 1,
+                    barcode:bar
+            };
+			    addToServer(kitchenList,"");
+        }
+
+
+
 		function generateData(res,str) {
 			var result = res;
 			data = {
@@ -148,7 +173,93 @@
 			}
 			return data;
 		}
-		
+
+        function generateDataForModification(res,str,qunatity) {
+			data = {
+				itemList: [
+				{
+					barcode: str,
+                    name: res,
+                    Quantity:quantity
+				}
+				]
+			}
+			return data;
+		}
+
+        function modifyOnServer(res,str,quantity){
+            if(quantity == null || quantity == ""){
+                quantity = 1;
+            }
+
+            var data = generateDataForModification(res,str,quantity);
+            $.ajax({
+				type: "POST",
+				url: url + "/family/" + familyid + "/addToFridge",
+                data: JSON.stringify(data),
+				crossDomain: true,
+				dataType: "json",
+				success: function (result) {
+				},
+				error: function(xhr,status,error){
+				},
+				dataType: "json"
+			});
+        }
+
+        function generateDataForShopping(res,str) {
+			var result = res;
+            var data = "";
+            var d= "";
+            if(res != null){
+                var outer ="{itemList: [{"; 
+                for(i =0 ; i < res.length-1;i++){
+                    data += "{barcode : " + res[i] + "},";
+                }
+                data += "{barcode : " + res[res.length-1] + "}"
+                var later = "  data}]}";
+                d = outer + data + later;
+            }      
+			return d;
+		}
+    
+        function removeFromServer(){
+            var res = getAllCheckedBarCodes("dataTable1")
+            var data = generateDataForShopping(res);
+                $.ajax({
+                type: "POST",
+                url: url + "/family/" + familyid + "/addToGarbage",
+                data: data,
+                crossDomain: true,
+                contentType: "json",
+                success: function (result) {
+                },
+                error: function(xhr,status,error){
+                },
+                dataType: "json"
+            });
+        }
+
+        function getAllCheckedBarCodes(div){
+            var selected = [];
+            $('#' + div + 'input:checked').each(function() {
+                selected.push($(this).attr('name'));
+            });
+            return selected;
+        }
+
+
+        function generateDataForMove(res,str) {
+            var result = res;
+            alert(JSON.stringify(result));
+            data = {
+                "itemList": [
+                {
+                    "barcode": result.text
+                }
+                ]
+            }
+        }
 		
 		function addToServer(res,str){
 			var data = generateData(res,str);
@@ -165,9 +276,10 @@
 				dataType: "json"
 			});
 		}
+        
         var rowID = 0;
 
-        function addTableRow(kitchenList, appIsLoading, div) {
+        function addTableRow(kitchenList, appIsLoading, div, isbar) {
             rowID += 1;
             var table = document.getElementById(div);
             var rowCount = table.rows.length;
@@ -176,27 +288,39 @@
             var cell1 = row.insertCell(0);
             var element1 = document.createElement("input");
             element1.type = "checkbox";
-            element1.name = "chkbox[]";
+            element1.name = kitchenList['barcode'];
             element1.checked = kitchenList["check"];
-            element1.setAttribute("onclick", "checkboxClicked()");
+            element1.id = "check" + rowID;
+            element1.setAttribute("onclick", "checkboxClicked('"+ div + "')");
             cell1.style = "width:20% !important";
             cell1.appendChild(element1);
 
-
             var cell2 = row.insertCell(1);
             var element2 = document.createElement("Label");
-            element2.setAttribute("for",kitchenList["text"]);
-            element2.innerHTML = kitchenList["text"];
+            element2.setAttribute("for",kitchenList["barcode"]);
+            var shouldAdd = false;
+            if(kitchenList["text"] == null || kitchenList["text"] == "" || (isbar !=null && isbar == true)){
+                element2.innerHTML = kitchenList["barcode"];
+                var btn = document.createElement("BUTTON");
+                btn.innerHTML = "Use OCR";
+                btn.setAttribute("onchange", "getPhoto(pictureSource.CAMERA, kitchenList['barcode']);");
+                shouldAdd = true;
+            }else{
+                element2.innerHTML = kitchenList["text"];
+            }
             element2.name = "txtbox[]";
             element2.class = "contenttd";
             element2.id = "text" + rowID;
-            element2.setAttribute("onchange", "saveToDoList("+ div + ")");
+            element2.setAttribute("onchange", "saveToDoList('"+ div + "')");
             cell2.style = "width:50% !important";
             cell2.appendChild(element2);
+            if(shouldAdd){
+                cell2.appendChild(btn);
+            }
+            
 
             var cell3 = row.insertCell(2);
             var element3 = document.createElement("input");
-            console.log("todo " + kitchenList["Quantity"]);
             if(kitchenList["Quantity"] == null || kitchenList["Quantity"] == undefined){
                 element3.setAttribute("value",1);
             }else{
@@ -204,7 +328,7 @@
             }
             element3.name = "txtbox[]";
             element3.id = "Quantity" + rowID;
-            element3.setAttribute("onchange", "saveToDoList("+ div + ")");
+            element3.setAttribute("onchange", "saveToDoList('"+ div + "')");
             element3.style = "width:50%";
             cell3.style = "width:30% !important";
             cell3.appendChild(element3);
@@ -277,7 +401,6 @@
                 }
             }
             saveToDoList(div);
-            alert("Completed Tasks Were Removed Successfully.");
         }
 
 
@@ -306,6 +429,8 @@
                     // retrieve the content of the to-do
                     var textbox = row.cells[1].childNodes[0];
                     textValue = textbox.innerHTML;
+                    todoArray = window.localStorage.getItem("todoList");
+                    var barcode = todoArray[i].barcode;
 
                     var qunatText = row.cells[2].childNodes[0];
                     quantValue = qunatText.value;
@@ -313,6 +438,7 @@
                     // populate the array
                     todoArray["row" + i] = {
                         check: checkBoxState,
+                        barcode:barcode,
                         text: textValue,
                         Quantity: quantValue
                     };
@@ -336,10 +462,11 @@
                 for (var obj in theList) {
                     count++;
                 }
-
-                deleteAllRows("dataTable1");
-                for (var i = 0; i < count; i++) {
-                    addTableRow(theList["row" + i], true, "dataTable1");
+                if(theList != null){
+                    deleteAllRows("dataTable1");
+                    for (var i = 0; i < count; i++) {
+                        addTableRow(theList["row" + i], true, "dataTable1");
+                    }
                 }
             }
         }
@@ -354,10 +481,11 @@
                 for (var obj in theList) {
                     count++;
                 }
-
-                deleteAllRows("dataTable2");
-                for (var i = 0; i < count; i++) {
-                    addTableRow(theList["row" + i], true, "dataTable2");
+                if(theList != null){
+                    deleteAllRows("dataTable2");
+                    for (var i = 0; i < count; i++) {
+                        addTableRow(theList["row" + i], true, "dataTable2");
+                    }
                 }
             }
         }
@@ -372,11 +500,12 @@
                     for (var obj in theList) {
                         count++;
                     }
-
+                if(theList != null){
                     deleteAllRows("dataTable3");
                     for (var i = 0; i < count; i++) {
                         addTableRow(theList["row" + i], true, "dataTable3");
                     }
+                }
                 }
             }
 
@@ -391,6 +520,7 @@
             }
             saveToDoList(div);
         }
+
 
         function toggle_sidebar()
         {
@@ -439,22 +569,22 @@
                 }
             }
 
-    function addLang(loc, lang) {
-        var langs = document.getElementById('langs');
-        var langOption = document.createElement("OPTION") 
-        langOption.innerText = lang; 
-        langOption.value = loc;
-            langs.options.add(langOption);
-    }
-    
-    function changeLang() {
-        var yourSelect = document.getElementById('langs');
-            window.plugins.tts.setLanguage(yourSelect.options[yourSelect.selectedIndex].value, win, fail);
-    }
-    
-    function win(result) {
-        console.log(result);
-    }
+        function addLang(loc, lang) {
+            var langs = document.getElementById('langs');
+            var langOption = document.createElement("OPTION") 
+            langOption.innerText = lang; 
+            langOption.value = loc;
+                langs.options.add(langOption);
+        }
+        
+        function changeLang() {
+            var yourSelect = document.getElementById('langs');
+                window.plugins.tts.setLanguage(yourSelect.options[yourSelect.selectedIndex].value, win, fail);
+        }
+        
+        function win(result) {
+            console.log(result);
+        }
         
         function fail(result) {
             console.log("Error = " + result);
@@ -466,12 +596,12 @@
         }
 
         function voicerec() {
-        var maxMatches = 1;
-        var promptString = "Speak now"; // optional
-        var language = "en-US";         // optional
-        window.plugins.speechrecognizer.startRecognize(function(result){
-        alert(result);
-        }, function(errorMessage){
-            console.log("Error message: " + errorMessage);
-        }, maxMatches, promptString, language);
+            var maxMatches = 1;
+            var promptString = "Speak now"; // optional
+            var language = "en-US";         // optional
+            window.plugins.speechrecognizer.startRecognize(function(result){
+            alert(result);
+            }, function(errorMessage){
+                console.log("Error message: " + errorMessage);
+            }, maxMatches, promptString, language);
     }
