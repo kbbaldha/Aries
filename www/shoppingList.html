@@ -1,0 +1,32 @@
+<div id="Section2" style="display: none; margin-top:5% !important">
+    <h1>Shopping List</h1>
+         <img class="toggle" src="icon-mobile.png" onclick="toggle_sidebar()" style="position: fixed; right: 10px; top: 10px" />
+         <div id="sidebar" style="position: fixed; display: inline-block; top: 0px; height: 100%; width: 200px; left: -200px; background-color: black; transition: all 0.5s ease-in-out;">
+         </div>
+        <div style="text-align:center">
+        
+          <input type="button" class="btn btn btn-primary"  value="Place Order" onclick="createNewToDo()"/>
+          <input type="button" class="btn btn btn-primary"  value="Delete items" onclick="removeCompletedTasks()"/>
+          <br/><br/>
+          <div id="dialog" title="Basic dialog" style = "display:none">
+            <p>Item Name cannot be empty</p>
+          </div>
+        </div>
+        <section>
+          <div class="tbl-header">
+            <table cellpadding="0" cellspacing="0" border="0" >
+              <thead>
+                <tr>
+                  <th style="width:20%">Check Item</th>
+                  <th style="width:50%">Your Inventory!!!  Items in your Kitchen</th>
+                  <th style="width:30%">Quantity</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0" id="dataTable">
+            </table>
+          </div>
+        </section>
+    </div>    
