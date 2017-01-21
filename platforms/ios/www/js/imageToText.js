@@ -3,8 +3,8 @@ var destinationType; // sets the format of returned value
 var imageText;
 // Wait for PhoneGap to connect with the device
 //
-//document.addEventListener("deviceready", onDeviceReady2, false);
-// PhoneGap is ready to be used!
+document.addEventListener("deviceready", onDeviceReady2, false);
+ //PhoneGap is ready to be used!
 //
 function onDeviceReady2() {
     pictureSource = navigator.camera.PictureSourceType;
@@ -69,12 +69,20 @@ function onPhotoURISuccess(imageURI) {
 
 function getPhoto(source) {
     // Retrieve image file location from specified source
-    navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+	//alert(source);;
+	getPhotoURI(source, onPhotoURISuccess);
+    
+}
+
+function getPhotoURI(source, callBack) {
+   // alert('getphotouri');
+    navigator.camera.getPicture(callBack, onFail, {
         quality: 50,
         destinationType: destinationType.DATA_URL,
         sourceType: source
     });
-}
+
+ }
  
 function onFail(message) {
     alert('Failed because: ' + message);

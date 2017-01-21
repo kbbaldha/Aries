@@ -114,4 +114,34 @@ section{
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
 }
 
-
+.light-background{
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    opacity: 0.5;
+	
+}
+.ajax-loader {
+	
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -32px; /* -1 * image width / 2 */
+    margin-top: -32px;  /* -1 * image height / 2 */
+    display: block;     
+}
+.full-background{
+	position: absolute;
+    height: 100%;
+    width: 100%;
+}
+#imageTagsParent{
+	display :none;
+}
+.no-display{
+	display:none;
+}
+.tag{
+	background: transparent;
+}
