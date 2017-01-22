@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.example.abhinigam.aries" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <feature name="Camera">
+        <param name="browser-package" value="Camera" />
+    </feature>
     <name>Aries</name>
     <description>
         Your futuristic personal assistant
@@ -15,18 +18,4 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
-    <platform name="android">
-        <allow-intent href="market:*" />
-    </platform>
-    <platform name="ios">
-        <allow-intent href="itms:*" />
-        <allow-intent href="itms-apps:*" />
-    </platform>
-    <engine name="ios" spec="~4.3.1" />
-    <engine name="android" spec="~6.0.0" />
-    <engine name="browser" spec="~4.1.0" />
-    <plugin name="cordova-plugin-whitelist" spec="1" />
-    <plugin name="cordova-plugin-camera" spec="~2.3.1" />
-    <plugin name="cordova-plugin-tts" spec="~0.2.3" />
-    <plugin name="org.apache.cordova.speech.speechrecognition" spec="https://github.com/macdonst/SpeechRecognitionPlugin" />
 </widget>

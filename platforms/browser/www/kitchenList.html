@@ -1,0 +1,29 @@
+  <div name = "section1 adjustheight" id="Section1" style="margin-top:5% !important">
+        <h1>Avaliable Items in Kitchen</h1>
+        <div style="text-align:center">
+          <input type="button" class="btn btn btn-primary"  value="Add item" onclick="createNewToDo()"/>
+          <input type="button" class="btn btn btn-primary"  value="Move selected to order" onclick="createNewToDo()"/>
+          <input type="button" class="btn btn btn-primary"  value="Deleted items" onclick="removeCompletedTasks()"/>
+          <br/><br/>
+          <div id="dialog" title="Basic dialog" style = "display:none">
+            <p>Item Name cannot be empty</p>
+          </div>
+        </div>
+        <section>
+          <div class="tbl-header">
+            <table cellpadding="0" cellspacing="0" border="0" >
+              <thead>
+                <tr>
+                  <th style="width:20%">Check Item</th>
+                  <th style="width:50%">Your Inventory!!!  Items in your Kitchen</th>
+                  <th style="width:30%">Quantity</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0" id="dataTable">
+            </table>
+          </div>
+        </section>
+  </div>

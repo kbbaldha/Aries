@@ -108,10 +108,10 @@ module.exports = [
 module.exports.metadata = 
 // TOP OF METADATA
 {
-    "cordova-plugin-whitelist": "1.3.1",
     "cordova-plugin-compat": "1.1.0",
     "cordova-plugin-camera": "2.3.1",
     "cordova-plugin-tts": "0.2.3",
+    "cordova-plugin-whitelist": "1.3.1",
     "org.apache.cordova.speech.speechrecognition": "0.1.2"
 };
 // BOTTOM OF METADATA

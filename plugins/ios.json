@@ -7,15 +7,15 @@
         "files": {}
     },
     "installed_plugins": {
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.example.abhinigam.aries"
-        },
         "cordova-plugin-camera": {
             "CAMERA_USAGE_DESCRIPTION": " ",
             "PHOTOLIBRARY_USAGE_DESCRIPTION": " ",
             "PACKAGE_NAME": "com.example.abhinigam.aries"
         },
         "cordova-plugin-tts": {
+            "PACKAGE_NAME": "com.example.abhinigam.aries"
+        },
+        "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.example.abhinigam.aries"
         },
         "org.apache.cordova.speech.speechrecognition": {
