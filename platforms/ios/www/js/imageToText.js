@@ -12,9 +12,9 @@ function onDeviceReady2() {
 
     destinationType = navigator.camera.DestinationType;
 
-     TTS.speak('I have Successfully added ', function () {
+    /* TTS.speak('I have Successfully added ', function () {
                     }, function (reason) {
-                    });
+                    });*/
 }
 
 function getTextFromImage(imageURI) {
@@ -33,7 +33,7 @@ function getTextFromImage(imageURI) {
           }
         ]
     }
-
+    $('#loader').show();
 
      $.ajax({
          type: "POST",
@@ -42,9 +42,10 @@ function getTextFromImage(imageURI) {
          crossDomain: true,
          contentType: "json",
          success: function (result) {
-             try{
+             try {
+                 $('#loader').hide();
                  imageText = result.responses[0].textAnnotations[0].description;
-                alert("Edited Data" + bar);
+                //alert("Edited Data" + bar);
                 var editedData = prompt("Please edit and enhance the information", imageText);
                 if (editedData != null && bar == null) {
                     
@@ -74,6 +75,7 @@ function getPhoto(source,b) {
     if(b != null){
         bar = b;
     }
+    //getPhotoURI(pictureSource.PHOTOLIBRARY, onPhotoURISuccess);
     getPhotoURI(source, onPhotoURISuccess);    
 }
 
