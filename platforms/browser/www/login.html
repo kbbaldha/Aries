@@ -1,0 +1,133 @@
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+<meta charset="utf-8">
+<title>Best Login Page design in html and css</title>
+<link rel="stylesheet" type="text/css" href="css/index.css"/>
+<style type="text/css">
+
+/* ---------- LOGIN ---------- */
+#login {
+margin: 50px auto;
+width: 300px;
+
+
+}
+h1{
+  font-size: 30px;
+  color: #fff;
+  /*text-transform: uppercase;*/
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+
+form fieldset input[type="text"], input[type="password"] {
+background-color: #e5e5e5;
+border: none;
+border-radius: 3px;
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+color: #5a5656;
+font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+font-size: 14px;
+height: 50px;
+outline: none;
+padding: 0px 10px;
+width: 280px;
+-webkit-appearance:none;
+}
+
+.custom-button{
+	display: inline-table;
+  height:3%
+  width:6%
+  background: #00b7ea;
+  
+  /*TYPE*/
+  color: white;
+  font: 17px/50px Helvetica, Verdana, sans-serif;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+        border-radius: 10px;
+	-webkit-box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+	-moz-box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+	background: -moz-linear-gradient(top, #00b7ea 0%, #009ec3 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00b7ea), color-stop(100%,#009ec3)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* IE10+ */
+	background: linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00b7ea', endColorstr='#009ec3',GradientType=0 ); /* IE6-9 */
+}
+
+
+</style>
+</head>
+<body align="center">
+<div id=="fb-root"></div>
+<script>
+
+window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1786859004911099',
+      xfbml      : true,
+      version    : 'v2.8'
+    });
+   FB.AppEvents.logPageView();
+  };
+
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=1786859004911099";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+
+var login = FB.login(function(response){
+  // Handle the response object, like in statusChangeCallback() in our demo
+  // code.
+  if (response.status === 'connected') {
+    // Logged into your app and Facebook.
+	var data = {
+		familyName:document.getElementById("id3").value,
+		socialLoginId:response.authResponse.userID,
+		socialLoginType:'Facebook'
+	}
+  } else {
+    // The person is logged into Facebook, but not your app.
+	alert("Invalid LoginId password entered");
+  } 
+});
+
+var validate = function(){
+	if(document.getElementById("id3").value!=null && document.getElementById("id3").value!=''){
+		document.getElementById("fb-login").disabled=false;
+	}
+}
+
+
+</script>
+<div id="login" align="center" style="padding-top: 200px;" >
+<h1 style="color:white" align="center" style="padding-bottom: 80px;"><strong> Welcome ! Please login.</strong></h1>
+<form>
+<fieldset>
+<p align="center"><input id="id3" type="text" required align="center" placeholder="                     Family Name" onBlur="if(this.value=='')this.value='                     Family Name'" onFocus="if(this.value=='                     Family Name')this.value='' "></p>
+<a class="custom-button" style="padding-left:30px; padding-right:30px" action="validate()"> LOGIN </a>
+</fieldset>
+</form>
+<div id="status">
+</div>
+<div class="fb-login-button" data-max-rows="1" data-size="medium" data-show-faces="false" data-auto-logout-link="false" onclick="FB.login()"></div>
+<h3 style="color:black" align="center" style="padding-top: 50px; display:inline"><strong>Copyright © 2017. All rights reserved</strong> </h3>
+
+</div> <!-- end login -->
+</body>
+</html>

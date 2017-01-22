@@ -666,7 +666,7 @@ function placeItemsOrder(tableName) {
         url: url + "/family/" + familyid + "/amazonOrder",
         data: products,
         crossDomain: true,
-        dataType: "application/json",
+        dataType: "json",
         success: function (result) {
 
             $("#loader").hide();
