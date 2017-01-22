@@ -9,12 +9,15 @@ document.addEventListener("deviceready", onDeviceReady2, false);
 //
 function onDeviceReady2() {
     pictureSource = navigator.camera.PictureSourceType;
-
     destinationType = navigator.camera.DestinationType;
 
-    /* TTS.speak('I have Successfully added ', function () {
-                    }, function (reason) {
-                    });*/
+    recognition = new SpeechRecognition();
+    recognition.onresult = function(event) {
+        if (event.results.length > 0) {
+            q.value = event.results[0][0].transcript;
+            q.form.submit();
+        }
+    }
 }
 
 function getTextFromImage(imageURI) {
@@ -48,7 +51,6 @@ function getTextFromImage(imageURI) {
                 //alert("Edited Data" + bar);
                 var editedData = prompt("Please edit and enhance the information", imageText);
                 if (editedData != null && bar == null) {
-                    
                     addItemToKitchen(editedData,"dataTable1");
                 }else{
                     addItemToKitchenWithOCR(editedData, bar);
@@ -75,7 +77,6 @@ function getPhoto(source,b) {
     if(b != null){
         bar = b;
     }
-    //getPhotoURI(pictureSource.PHOTOLIBRARY, onPhotoURISuccess);
     getPhotoURI(source, onPhotoURISuccess);    
 }
 

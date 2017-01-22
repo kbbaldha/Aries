@@ -2,6 +2,7 @@
     var familyid = "";
 
     function signInToServer(name){
+        $('#loader').show();
          name = '{"familyName" : "myFamily1"}';
          $.ajax({
          type: "POST",
@@ -12,12 +13,15 @@
          success: function (result) {
              familyid = result[0]._id; 
              speechFeed();
+             setInterval(refreshFeed,5000);
+             $('#loader').hide();
          },
          error: function(xhr,status,error){
+             alert( error + " Error in connection .Tap to try again");
+             signInToServer("myFamily1");
          },
          dataType: "json"
       });
-      setInterval(refreshFeed,30000);
     }
 
     function refreshFeed(){
@@ -34,7 +38,8 @@
                     }
                 },
                 error: function(xhr,status,error){
-                        loadToDoList();                    
+                        alert(error + " . Tap to retry again");
+                        refreshFeed()             
                 },
                 dataType: "json"
             });
@@ -58,7 +63,9 @@
                     }
                 },
                 error: function(xhr,status,error){
-                        loadToDoList();                    
+                        //loadToDoList();     
+                        alert(error + " . Tap to retry again");
+                        speechFeed()               
                 },
                 dataType: "json"
             });
@@ -138,13 +145,47 @@
     }
 
         function scan(){
+            var str = true;
             cordova.plugins.barcodeScanner.scan(function(result){
-                addItemToKitchen(result.text, "dataTable1",true);
-                speak(result.text);
+                res = result;
+                addToServerBar(res,str);
             },function(error){
-                alert(JSON.stringify(error));
+                alert(error);
             });
         }
+
+        function addToServerBar(res,str){
+            var r= res;
+            var s= str;
+            var data = generateDataForBar(res,str);
+                $.ajax({
+                type: "POST",
+                url: url + "/family/" + familyid + "/addToFridge",
+                data: JSON.stringify(data),
+                crossDomain: true,
+                contentType: "application/json",
+                success: function (result) {
+                    refreshFeed();
+                },
+                error: function(xhr,status,error){
+                    alert(error + ". Tap to try again");
+                    addToServerBar(r,s);
+                },
+                dataType: "json"
+            });
+        }
+
+        function generateDataForBar(res,str) {
+            var result = res;
+            return data = {
+                "itemList": [
+                {
+                    "barcode": result.text
+                }
+                ]
+            }
+        }
+
 
         function createNewToDo(div) {
             var kitchenList = {};
@@ -181,7 +222,7 @@
         }
 
         function addItemToKitchenWithOCR(todo,bar){
-        var data = {
+            var data = {
 				itemList: [
 				{
 					name: todo,
@@ -193,18 +234,18 @@
 			$.ajax({
 				type: "POST",
 				url: url + "/family/" + familyid + "/addToFridge",
-                data: JSON.stringify(data),
+                data: data,
 				crossDomain: true,
-				dataType: "json",
+				dataType: "application/json",
 				success: function (result) {
+                    speak("Item added");
 				},
 				error: function(xhr,status,error){
+                    speak("Error saving item");
 				},
 				dataType: "json"
 			});
         }
-
-
 
 		function generateData(res,str) {
 			var result = res;
@@ -283,6 +324,7 @@
                 updateLocalStorage(result);
             },
             error: function(xhr,status,error){
+                alert(error + "result");
             },
             dataType: "json"
         });
@@ -638,8 +680,8 @@
         }
         
         function speak(text) {
-        TTS.speak('I have Successfully added ' + text, function () {     
-                    });
+        TTS.speak(text, function () {     
+            });
         }
 
         function voicerec() {

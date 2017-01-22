@@ -26,7 +26,7 @@
     "cordova-plugin-tts": {
         "source": {
             "type": "registry",
-            "id": "cordova-plugin-tts"
+            "id": "cordova-plugin-tts@~0.2.3"
         },
         "is_top_level": true,
         "variables": {}
@@ -35,6 +35,23 @@
         "source": {
             "type": "git",
             "url": "https://github.com/macdonst/SpeechRecognitionPlugin",
+            "subdir": "."
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "phonegap-plugin-barcodescanner": {
+        "source": {
+            "type": "registry",
+            "id": "phonegap-plugin-barcodescanner"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-speechrecognizer": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/poiuytrez/SpeechRecognizer",
             "subdir": "."
         },
         "is_top_level": true,

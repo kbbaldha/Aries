@@ -2,6 +2,7 @@
     var familyid = "";
 
     function signInToServer(name){
+        $('#loader').show();
          name = '{"familyName" : "myFamily1"}';
          $.ajax({
          type: "POST",
@@ -12,12 +13,15 @@
          success: function (result) {
              familyid = result[0]._id; 
              speechFeed();
+             setInterval(refreshFeed,5000);
+             $('#loader').hide();
          },
          error: function(xhr,status,error){
+             alert( error + " Error in connection .Tap to try again");
+             signInToServer("myFamily1");
          },
          dataType: "json"
       });
-      setInterval(refreshFeed,30000);
     }
 
     function refreshFeed(){
@@ -34,7 +38,8 @@
                     }
                 },
                 error: function(xhr,status,error){
-                        loadToDoList();                    
+                        alert(error + " . Tap to retry again");
+                        refreshFeed();          
                 },
                 dataType: "json"
             });
@@ -58,7 +63,9 @@
                     }
                 },
                 error: function(xhr,status,error){
-                        loadToDoList();                    
+                        //loadToDoList();     
+                        alert(error + " . Tap to retry again");
+                        speechFeed()               
                 },
                 dataType: "json"
             });
@@ -138,13 +145,47 @@
     }
 
         function scan(){
+            var str = true;
             cordova.plugins.barcodeScanner.scan(function(result){
-                addItemToKitchen(result.text, "dataTable1",true);
-                speak(result.text);
+                res = result;
+                addToServerBar(res,str);
             },function(error){
-                alert(JSON.stringify(error));
+                alert(error);
             });
         }
+
+        function addToServerBar(res,str){
+            var r= res;
+            var s= str;
+            var data = generateDataForBar(res,str);
+                $.ajax({
+                type: "POST",
+                url: url + "/family/" + familyid + "/addToFridge",
+                data: JSON.stringify(data),
+                crossDomain: true,
+                contentType: "application/json",
+                success: function (result) {
+                    refreshFeed();
+                },
+                error: function(xhr,status,error){
+                    alert(error + ". Tap to try again");
+                    addToServerBar(r,s);
+                },
+                dataType: "json"
+            });
+        }
+
+        function generateDataForBar(res,str) {
+            var result = res;
+            return data = {
+                "itemList": [
+                {
+                    "barcode": result.text
+                }
+                ]
+            }
+        }
+
 
         function createNewToDo(div) {
             var kitchenList = {};
@@ -181,7 +222,7 @@
         }
 
         function addItemToKitchenWithOCR(todo,bar){
-        var data = {
+            var data = {
 				itemList: [
 				{
 					name: todo,
@@ -193,28 +234,39 @@
 			$.ajax({
 				type: "POST",
 				url: url + "/family/" + familyid + "/addToFridge",
-                data: JSON.stringify(data),
+                data: data,
 				crossDomain: true,
-				dataType: "json",
+				dataType: "application/json",
 				success: function (result) {
+                    speak("Item added");
 				},
 				error: function(xhr,status,error){
+                    speak("Error saving item");
 				},
 				dataType: "json"
 			});
         }
 
-
-
 		function generateData(res,str) {
 			var result = res;
-			data = {
-				itemList: [
-				{
-					name: result.text
-				}
-				]
-			}
+            if(str == "voice"){
+                data = {
+                    itemList: [
+                    {
+                        name: result
+                    }
+                 ]
+                }
+            }else{
+                data = {
+                    itemList: [
+                    {
+                        name: result.text
+                    }
+                    ]
+                }
+            }
+			
 			return data;
 		}
 
@@ -270,8 +322,8 @@
 			return d;
 		}
     
-        function removeFromServer(){
-            var res = getAllCheckedBarCodes("dataTable1")
+        function removeFromServer(div){
+            var res = getAllCheckedBarCodes(div)
             var data = generateDataForShopping(res);
             $.ajax({
             type: "POST",
@@ -283,6 +335,7 @@
                 updateLocalStorage(result);
             },
             error: function(xhr,status,error){
+                alert(error + "result");
             },
             dataType: "json"
         });
@@ -299,7 +352,6 @@
 
         function generateDataForMove(res,str) {
             var result = res;
-            alert(JSON.stringify(result));
             data = {
                 "itemList": [
                 {
@@ -638,16 +690,30 @@
         }
         
         function speak(text) {
-        TTS.speak('I have Successfully added ' + text, function () {     
-                    });
+            TTS.speak(text, function () {     
+             });
         }
 
+        var l =0 ;
         function voicerec() {
             var maxMatches = 1;
-            var promptString = "Speak now"; // optional
+            var promptString = "Add your product though voic e.g try 'ADD APPLES'"; // optional
             var language = "en-US";         // optional
+            
             window.plugins.speechrecognizer.startRecognize(function(result){
-            alert(result);
+                    if(result != null && result.toString().trim().split(" ")[0] != null &&  result.toString().trim().split(" ")[1] != null && result.toString().trim().split(" ")[0] == "add"){
+                        addToServer(result.toString().trim().split(" ")[1],"voice");
+                        speak("Adding " + result.toString().trim().split(" ")[1] + " to your kitchen list");
+                    }else{
+                        if(l< 3){
+                            l++;
+                            speak("I didn't quite get you. Please try again");
+                            voicerec();
+                        }else{
+                            speak("Sorry, I am unable to help you right now.");
+                            l = 0;
+                        }
+                    }
             }, function(errorMessage){
                 console.log("Error message: " + errorMessage);
             }, maxMatches, promptString, language);

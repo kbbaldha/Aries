@@ -24,6 +24,9 @@
     <feature name="SpeechRecognition">
         <param name="ios-package" value="SpeechRecognition" />
     </feature>
+    <feature name="BarcodeScanner">
+        <param name="ios-package" value="CDVBarcodeScanner" />
+    </feature>
     <name>Aries</name>
     <description>
         Your futuristic personal assistant
