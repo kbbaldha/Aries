@@ -33,8 +33,14 @@ function getTextFromImage(imageURI) {
           }
         ]
     }
+<<<<<<< HEAD
     $('#loader').show();
+   // alert(imageURI);
+    //$.support.cors = true;
+=======
 
+
+>>>>>>> origin/master
      $.ajax({
          type: "POST",
          url: "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDHanX2UO4E348H7QjyXD2bZnL_UGQ1_6Y",
@@ -42,16 +48,29 @@ function getTextFromImage(imageURI) {
          crossDomain: true,
          contentType: "json",
          success: function (result) {
+<<<<<<< HEAD
+             //alert(result.responses[0].textAnnotations[0].description);
              try {
                  $('#loader').hide();
                  imageText = result.responses[0].textAnnotations[0].description;
-                //alert("Edited Data" + bar);
+                 //document.getElementById('result').innerHTML = imageText;
+
+                var editedData = prompt("Please edit and enhance the information", imageText);
+                if (editedData != null) {
+                    
+                    addToServer({ text: editedData });
+                    addItemToKitchen(editedData, "datatable1");
+=======
+             try{
+                 imageText = result.responses[0].textAnnotations[0].description;
+                alert("Edited Data" + bar);
                 var editedData = prompt("Please edit and enhance the information", imageText);
                 if (editedData != null && bar == null) {
                     
                     addItemToKitchen(editedData,"dataTable1");
                 }else{
                     addItemToKitchenWithOCR(editedData, bar);
+>>>>>>> origin/master
                 }
              }
              catch (err) {
@@ -71,12 +90,21 @@ function onPhotoURISuccess(imageURI) {
 }
 
 
+<<<<<<< HEAD
+function getPhoto(source) {
+    // Retrieve image file location from specified source
+    //alert(source);;
+    
+    //getPhotoURI(pictureSource.PHOTOLIBRARY, onPhotoURISuccess);
+	getPhotoURI(source, onPhotoURISuccess);
+    
+=======
 function getPhoto(source,b) {
     if(b != null){
         bar = b;
     }
-    //getPhotoURI(pictureSource.PHOTOLIBRARY, onPhotoURISuccess);
     getPhotoURI(source, onPhotoURISuccess);    
+>>>>>>> origin/master
 }
 
 function getPhotoURI(source, callBack) {
