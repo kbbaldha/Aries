@@ -565,8 +565,8 @@
         
         function onDeviceReady() {
            // window.plugins.tts.startup(startupWin, fail);
-            pictureSource = navigator.camera.PictureSourceType;
-            destinationType = navigator.camera.DestinationType;
+           // pictureSource = navigator.camera.PictureSourceType;
+            //destinationType = navigator.camera.DestinationType;
         }
 
         function startupWin(result) {
@@ -630,4 +630,51 @@
             }, function(errorMessage){
                 console.log("Error message: " + errorMessage);
             }, maxMatches, promptString, language);
-    }
+        }
+
+        function placeItemsOrder(tableName) {
+            var table = $('#dataTable2');
+            var products = 
+            {
+                upcCodes:[]
+            }
+
+
+            table.find('tr').each(function (i, el) {
+                var $tds = $(this).find('td');
+                var barcode, qty;
+                if ($tds.eq(0).find('input').is(":checked")) {
+                    barcode = $tds.eq(0).find('input').attr('name');
+                    try{
+                        qty = parseInt($tds.eq(2).find('input')[0].value);
+                    }
+                    catch (e) {
+                        qty = 0;
+                    }
+                    products.upcCodes.push({
+                        code:barcode,
+                        quantity:qty
+                    });
+                }
+                
+                $("#loader").show();
+                $.ajax({
+                    type: "POST",
+                    url: url + "/family/" + familyid + "/amazonOrder",
+                    data: products,
+                    crossDomain: true,
+                    dataType: "json",
+                    success: function (result) {
+                        
+                        $("#loader").hide();
+                        window.open(result.url, '_system');
+                    },
+                    error: function (xhr, status, error) {
+                    },
+                    dataType: "json"
+                });
+
+                    
+            });
+
+        }
