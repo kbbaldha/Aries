@@ -1,7 +1,7 @@
 var pictureSource;   // picture source
 var destinationType; // sets the format of returned value 
 var imageText;
-var bar;
+var bar = null;
 // Wait for PhoneGap to connect with the device
 //
 document.addEventListener("deviceready", onDeviceReady2, false);
@@ -42,20 +42,19 @@ function getTextFromImage(imageURI) {
          crossDomain: true,
          contentType: "json",
          success: function (result) {
-             //alert(result.responses[0].textAnnotations[0].description);
              try{
                  imageText = result.responses[0].textAnnotations[0].description;
-                 document.getElementById('result').innerHTML = imageText;
-
+                alert("Edited Data" + bar);
                 var editedData = prompt("Please edit and enhance the information", imageText);
                 if (editedData != null && bar == null) {
+                    
                     addItemToKitchen(editedData,"dataTable1");
                 }else{
                     addItemToKitchenWithOCR(editedData, bar);
                 }
              }
              catch (err) {
-                 alert(JSON.stringify(result));
+                 alert(err);
              }
          },
          error: function(xhr,status,error){
@@ -71,19 +70,14 @@ function onPhotoURISuccess(imageURI) {
 }
 
 
-function getPhoto(source,bar) {
-    // Retrieve image file location from specified source
-	//alert(source);;
-    if(bar != null){
-        bar = bar;
-        getPhotoURI(source, onPhotoURISuccess);
-    }else{
-        getPhotoURI(source, onPhotoURISuccess);
-    }    
+function getPhoto(source,b) {
+    if(b != null){
+        bar = b;
+    }
+    getPhotoURI(source, onPhotoURISuccess);    
 }
 
 function getPhotoURI(source, callBack) {
-   // alert('getphotouri');
     navigator.camera.getPicture(callBack, onFail, {
         quality: 50,
         destinationType: destinationType.DATA_URL,

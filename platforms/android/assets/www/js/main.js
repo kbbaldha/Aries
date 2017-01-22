@@ -2,7 +2,7 @@
     var familyid = "";
 
     function signInToServer(name){
-         name = '{"familyname" : "myFamily1"}';
+         name = '{"familyName" : "myFamily1"}';
          $.ajax({
          type: "POST",
          url: url + "/login",
@@ -17,7 +17,7 @@
          },
          dataType: "json"
       });
-      setInterval(refreshFeed,10000);
+      setInterval(refreshFeed,30000);
     }
 
     function refreshFeed(){
@@ -27,9 +27,14 @@
                 crossDomain: true,
                 contentType: "json",
                 success: function (result) {
-                    updateLocalStorage(result);
+                    if(result != null){
+                        updateLocalStorage(result);
+                    }else{
+                        loadToDoList();
+                    }
                 },
                 error: function(xhr,status,error){
+                        loadToDoList();                    
                 },
                 dataType: "json"
             });
@@ -144,20 +149,34 @@
                     barcode:""
             };
             if(div != null && div != ""){
-                addTableRow(kitchenList, false, div, isbar);
 			    addToServer(kitchenList,"");
             }
             speak(todo);
         }
 
-        function addItemToKitchenWithOCR(todo,div,isbar,bar){
-            kitchenList = {
-                    check: 0,
-                    text: "",
-                    Quantity: 1,
-                    barcode:bar
-            };
-			    addToServer(kitchenList,"");
+        function addItemToKitchenWithOCR(todo,bar){
+        var data = {
+				itemList: [
+				{
+					name: todo,
+                    barcode: bar,
+                    quantity:1
+				}
+				]
+			}
+            alert(JSON.stringify(data));
+			$.ajax({
+				type: "POST",
+				url: url + "/family/" + familyid + "/addToFridge",
+                data: JSON.stringify(data),
+				crossDomain: true,
+				dataType: "json",
+				success: function (result) {
+				},
+				error: function(xhr,status,error){
+				},
+				dataType: "json"
+			});
         }
 
 
@@ -174,29 +193,34 @@
 			return data;
 		}
 
-        function generateDataForModification(res,str,qunatity) {
+        function generateDataForModification(res,str,quantity) {
 			data = {
 				itemList: [
 				{
 					barcode: str,
                     name: res,
-                    Quantity:quantity
+                    quantity:quantity
 				}
 				]
 			}
 			return data;
 		}
 
-        function modifyOnServer(res,str,quantity){
+        function modifyOnServer(cell){
+            var str = $(cell).parent().parent().find("td:first").find('input')[0].name;
+            var res = $(cell).parent().parent().find("td:eq(1)").find('label')[0].text;
+            var quantity = $(cell).parent().parent().find("td:eq(2)").find('input')[0].value;
+
+            console.log($(cell).parent().parent().find("td:first").find('input'));
+            
             if(quantity == null || quantity == ""){
                 quantity = 1;
             }
-
             var data = generateDataForModification(res,str,quantity);
             $.ajax({
 				type: "POST",
 				url: url + "/family/" + familyid + "/addToFridge",
-                data: JSON.stringify(data),
+                data: data,
 				crossDomain: true,
 				dataType: "json",
 				success: function (result) {
@@ -212,12 +236,12 @@
             var data = "";
             var d= "";
             if(res != null){
-                var outer ="{itemList: [{"; 
+                var outer ="{itemList: ["; 
                 for(i =0 ; i < res.length-1;i++){
                     data += "{barcode : " + res[i] + "},";
                 }
                 data += "{barcode : " + res[res.length-1] + "}"
-                var later = "  data}]}";
+                var later = " ]}";
                 d = outer + data + later;
             }      
 			return d;
@@ -226,13 +250,15 @@
         function removeFromServer(){
             var res = getAllCheckedBarCodes("dataTable1")
             var data = generateDataForShopping(res);
+            console.log(data);
                 $.ajax({
                 type: "POST",
                 url: url + "/family/" + familyid + "/addToGarbage",
-                data: data,
+                data: JSON.stringify(data),
                 crossDomain: true,
                 contentType: "json",
                 success: function (result) {
+                    updateLocalStorage(result);
                 },
                 error: function(xhr,status,error){
                 },
@@ -242,9 +268,10 @@
 
         function getAllCheckedBarCodes(div){
             var selected = [];
-            $('#' + div + 'input:checked').each(function() {
+            $('#' + div + ' input:checked').each(function() {
                 selected.push($(this).attr('name'));
             });
+            console.log(selected);
             return selected;
         }
 
@@ -263,6 +290,7 @@
 		
 		function addToServer(res,str){
 			var data = generateData(res,str);
+            $("#loader").show();
 			$.ajax({
 				type: "POST",
 				url: url + "/family/" + familyid + "/addToFridge",
@@ -270,6 +298,8 @@
 				crossDomain: true,
 				dataType: "json",
 				success: function (result) {
+                    updateLocalStorage(result);
+                    $("#loader").hide();
 				},
 				error: function(xhr,status,error){
 				},
@@ -303,7 +333,7 @@
                 element2.innerHTML = kitchenList["barcode"];
                 var btn = document.createElement("BUTTON");
                 btn.innerHTML = "Use OCR";
-                btn.setAttribute("onchange", "getPhoto(pictureSource.CAMERA, kitchenList['barcode']);");
+                btn.setAttribute("onclick", "getPhoto(pictureSource.CAMERA, '" + kitchenList['barcode'] + "');");
                 shouldAdd = true;
             }else{
                 element2.innerHTML = kitchenList["text"];
@@ -328,7 +358,7 @@
             }
             element3.name = "txtbox[]";
             element3.id = "Quantity" + rowID;
-            element3.setAttribute("onchange", "saveToDoList('"+ div + "')");
+            element3.setAttribute("onblur", "modifyOnServer(this)");
             element3.style = "width:50%";
             cell3.style = "width:30% !important";
             cell3.appendChild(element3);
@@ -412,7 +442,7 @@
 
             var table = document.getElementById(div);
             var rowCount = table.rows.length;
-
+            console.log(rowCount);
             if (rowCount != 0) {
                 // loop through all rows of the table
                 for (var i = 0; i < rowCount; i++) {
@@ -427,18 +457,17 @@
                     }
 
                     // retrieve the content of the to-do
-                    var textbox = row.cells[1].childNodes[0];
-                    textValue = textbox.innerHTML;
-                    todoArray = window.localStorage.getItem("todoList");
-                    var barcode = todoArray[i].barcode;
+                    // var textbox = row.cells[1].childNodes[0];
+                    // textValue = textbox.innerHTML;
+                    // todoArray = window.localStorage.getItem("todoList");
+                    // var barcode = todoArray[i].barcode;
+                    // console.log(quantValue);
 
-                    var qunatText = row.cells[2].childNodes[0];
-                    quantValue = qunatText.value;
-
+                    var quantText = row.cells[2].childNodes[0];
+                    quantValue = quantText.value;
                     // populate the array
                     todoArray["row" + i] = {
                         check: checkBoxState,
-                        barcode:barcode,
                         text: textValue,
                         Quantity: quantValue
                     };
@@ -446,8 +475,6 @@
             } else {
                 todoArray = null;
             }
-
-            // use the local storage API to persist the data as JSON
             window.localStorage.setItem("todoList", JSON.stringify(todoArray));
         }
 
@@ -490,7 +517,6 @@
             }
         }
 
-    // load the to-do list
             function loadProductList() {
                 var theList = JSON.parse(window.localStorage.getItem("productList"));
                 if (null == theList || theList == "null") {
