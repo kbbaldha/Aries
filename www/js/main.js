@@ -634,11 +634,11 @@ function toggle_sidebar() {
 }
 
 function onLoad() {
-    document.addEventListener("deviceready", onDeviceReady, false);
+   // document.addEventListener("deviceready", onDeviceReady, false);
 }
 
 function onDeviceReady() {
-            window.plugins.tts.startup(startupWin, fail);
+           // window.plugins.tts.startup(startupWin, fail);
     // pictureSource = navigator.camera.PictureSourceType;
     //destinationType = navigator.camera.DestinationType;
 }
