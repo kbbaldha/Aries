@@ -1,31 +1,35 @@
 //var url = "http://10.136.34.148:8042";
 var url = "http://45.79.223.108:8042";
-var familyid = "23";
-
+var familyid = "";
+$(document).ready(function () {
+    if (familyid != "") {
+        $("#appPage").show();
+        $("#login").hide();
+    }
+});
 function signInToServer(name) {
-        $('#loader').show();
-    name = '{"familyName" : "myFamily1"}';
+    fname = { familyName: name };
     $.ajax({
         type: "POST",
         url: url + "/login",
-        data: JSON.stringify(name),
+        data: JSON.stringify(fname),
         crossDomain: false,
-        contentType: "json",
+        contentType: "application/json",
         success: function (result) {
+            $("#appPage").show();
+            $("#login").hide();
+            console.log(result);
             familyid = result[0]._id;
-             speechFeed();
-             setInterval(refreshFeed,5000);
-             $('#loader').hide();
+            refreshFeed();
         },
         error: function (xhr, status, error) {
-             alert( error + " Error in connection .Tap to try again");
-             signInToServer("myFamily1");
+            
+            alert("Login Failed. Please try again");
         },
         dataType: "json"
     });
-    
+    setInterval(refreshFeed, 5000);
 }
-
 function refreshFeed() {
     $.ajax({
         type: "GET",

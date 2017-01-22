@@ -1,151 +1,231 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Aries - Your personal kitchen assistant</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <link rel="stylesheet" href="/resources/demos/style.css">
-        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-		<script type="text/javascript" src="https://sdk.clarifai.com/js/clarifai-latest.js"></script>
-        <script type="text/javascript" src="js/imageTags.js"></script>
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/sidemain.css">
-        <script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/gnmenu.js"></script>
-        <script src="js/bootbox.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="css/index.css"/>
-        <script type="text/javascript" charset="utf-8" src="js/tts.js"></script>
-        <script src="js/main.js" type="text/javascript"></script>
-        <script src="js/imageToText.js" type="text/javascript"></script>
-        <script src="http://www.w3schools.com/lib/w3data.js"></script>
-    </head>
+<head>
+    <title>Aries - Your personal kitchen assistant</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://sdk.clarifai.com/js/clarifai-latest.js"></script>
+    <script type="text/javascript" src="js/imageTags.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/sidemain.css">
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/gnmenu.js"></script>
+    <script src="js/bootbox.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <script type="text/javascript" charset="utf-8" src="js/tts.js"></script>
+    <script src="js/main.js" type="text/javascript"></script>
+    <script src="js/imageToText.js" type="text/javascript"></script>
+    <script src="http://www.w3schools.com/lib/w3data.js"></script>
+    <style type="text/css">
+        /* ---------- LOGIN ---------- */
+        #login {
+            margin: 50px auto;
+            width: 300px;
+        }
 
-      <body onload="signInToServer('myFamily');">
+        h1 {
+            font-size: 30px;
+            color: #fff;
+            /*text-transform: uppercase;*/
+            font-weight: 300;
+            text-align: center;
+            margin-bottom: 15px;
+        }
 
-          <nav>
+
+        fieldset input[type="text"], input[type="password"] {
+            background-color: #e5e5e5;
+            border: none;
+            border-radius: 3px;
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            color: #5a5656;
+            font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            height: 50px;
+            outline: none;
+            padding: 0px 10px;
+            width: 280px;
+            -webkit-appearance: none;
+        }
+
+        .custom-button {
+            display: inline-table;
+            height: 3% width:6% background: #00b7ea;
+            /*TYPE*/
+            color: white;
+            font: 17px/50px Helvetica, Verdana, sans-serif;
+            text-decoration: none;
+            text-align: center;
+            text-transform: uppercase;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+            -webkit-box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            -moz-box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            background: -moz-linear-gradient(top, #00b7ea 0%, #009ec3 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00b7ea), color-stop(100%,#009ec3)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* IE10+ */
+            background: linear-gradient(top, #00b7ea 0%,#009ec3 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00b7ea', endColorstr='#009ec3',GradientType=0 ); /* IE6-9 */
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <script>
+
+
+
+        var validate = function () {
+            console.log("in validate");
+            console.log(document.getElementById("family").value);
+            if (document.getElementById("family").value != null && document.getElementById("family").value != '') {
+                console.log("in validate");
+                signInToServer(document.getElementById("family").value);
+            }
+        }
+
+
+    </script>
+    <div id="login" align="center" style="padding-top: 200px;">
+        <h1 style="color:white" align="center" style="padding-bottom: 80px;"><strong> Welcome ! Please login.</strong></h1>
+        <fieldset>
+            <p align="center"><input id="family" type="text" required align="center" placeholder="                     Family Name" onblur="if(this.value=='')this.value='                     Family Name'" onfocus="if(this.value=='                     Family Name')this.value='' "></p>
+            <button class="custom-button" style="padding-left:30px; padding-right:30px" onclick="validate()"> LOGIN </button>
+        </fieldset>
+    </div>
+    <!-- ==========================================Start of the App==========================================-->
+    <div id="appPage" style="display:none;">
+        <nav>
             <ul>
-              <li><a href="#" class="icon icon-menu" id="btn-menu">Menu</a></li>
+                <li><a href="#" class="icon icon-menu" id="btn-menu">Menu</a></li>
             </ul>
-          </nav>
-		  <div id="loader" class="light-background no-display">
-              <img src="img/loading.gif" class="ajax-loader" />
-          </div>
-          <div id="imageTagsParent">
-              <div class="light-background"></div>
-              <div id="imageTags" class="full-background"></div>
-          </div>
-          <div id="sideNav">
+        </nav>
+        <div id="loader" class="light-background no-display">
+            <img src="img/loading.gif" class="ajax-loader" />
+        </div>
+        <div id="imageTagsParent">
+            <div class="light-background"></div>
+            <div id="imageTags" class="full-background"></div>
+        </div>
+        <div id="sideNav">
             <ul>
-              <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section1'); $('#btn-menu').click();"><span>Avaliable Items</span></a></li>
-              <li><a href="#" class="icon icon-home" onclick="toggle_visibility('Section2');$('#btn-menu').click();"><span>Need to Order</span></a></li>
-              <li><a href="#" class="icon icon-articles" onclick="scan(); $('#btn-menu').click();"><span>Scan Using Barcode</span></a></li>
-              <li><a href="#" class="icon icon-social" onclick="getPhoto(pictureSource.CAMERA); $('#btn-menu').click();"><span>Scan Using OCR</span></a></li>
-			  <li><a href="#" class="icon icon-social" onclick="getTags(pictureSource.CAMERA); $('#btn-menu').click();"><span>Take Picture</span></a></li>
-			  
-              <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section3');$('#btn-menu').click();"><span>My Purchase History</span></a></li>
-            </ul>
-          </div>
-            <div name = "section1 adjustheight" id="Section1" align="center" style="margin-top:15% !important">
-					<img src="aries.png" alt="Mountain View"  style="width:100px;height:100px;margin-top:4%">
-                    <h1>Your Kitchen</h1>
-                    <div  style="text-align:center" >
-                    <input type="button" class="btn btn btn-primary custom-button"  value="Add item" onclick="createNewToDo('dataTable1')"/>
-                    <input type="button" class="btn btn btn-primary custom-button"  value="Move selected to order" onclick="removeFromServer('dataTable1')"/>
-                    <input type="button" class="btn btn btn-primary custom-button"  value="Voice Assistant" onclick="javascript:voicerec()"/>
-                    <!--<input type="button" class="btn btn btn-primary"  value="Deleted items" onclick="removeCompletedTasks('dataTable1')"/>-->
-					
-                    <br/><br/>
-                    <div id="dialog" title="Basic dialog" style = "display:none">
-                        <p>Item Name cannot be empty</p>
-                    </div>
-                    </div>
-                    <section>
-                    <div class="tbl-header">
-                        <table cellpadding="0" cellspacing="0" border="0" >
-                        <thead>
-                            <tr>
-                            <th style="width:20%;">Select Items</th>
-                            <th style="width:50%; text-align: center">Items in Kitchen</th>
-                            <th style="width:30%">Quantity</th>
-                            </tr>
-                        </thead>
-                        </table>
-                    </div>
-                    <div class="tbl-content">
-                        <table cellpadding="0" cellspacing="0" border="0" id="dataTable1">
-                        </table>
-                    </div>
-                    </section>
-            </div>
+                <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section1'); $('#btn-menu').click();"><span>Avaliable Items</span></a></li>
+                <li><a href="#" class="icon icon-home" onclick="toggle_visibility('Section2');$('#btn-menu').click();"><span>Need to Order</span></a></li>
+                <li><a href="#" class="icon icon-articles" onclick="scan(); $('#btn-menu').click();"><span>Scan Using Barcode</span></a></li>
+                <li><a href="#" class="icon icon-social" onclick="getPhoto(pictureSource.CAMERA); $('#btn-menu').click();"><span>Scan Using OCR</span></a></li>
+                <li><a href="#" class="icon icon-social" onclick="getTags(pictureSource.CAMERA); $('#btn-menu').click();"><span>Take Picture</span></a></li>
 
-            <div id="Section2" align="center" style="display: none; margin-top:15% !important">
-				<img src="aries.png" alt="Mountain View"   style="width:100px;height:100px;margin-top:4%">
-                <h1>Shopping List</h1>
-                    <img class="toggle" src="icon-mobile.png" onclick="toggle_sidebar()" style="position: fixed; right: 10px; top: 10px" />
-                    <div id="sidebar" style="position: fixed; display: inline-block; top: 0px; height: 100%; width: 200px; left: -200px; background-color: black; transition: all 0.5s ease-in-out;">
-                    </div>
-                    <div style="text-align:center">
-                    
-                        <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="placeItemsOrder('dataTable2')" />Place Order</a>
-                    <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="removeCompletedTasks('dataTable2')"/>Delete Items</a>
-                    <br/><br/>
-                    <div id="dialog" title="Basic dialog" style = "display:none">
-                        <p>Item Name cannot be empty</p>
-                    </div>
-                    </div>
-                    <section>
-                    <div class="tbl-header">
-                        <table cellpadding="0" cellspacing="0" border="0" >
-                        <thead>
-                            <tr>
-                            <th style="width:20%">Select Items</th>
-                            <th style="width:50%">Shopping List</th>
-                            <th style="width:30%">Quantity</th>
-                            </tr>
-                        </thead>
-                        </table>
-                    </div>
-                    <div class="tbl-content">
-                        <table cellpadding="0" cellspacing="0" border="0" id="dataTable2">
-                        </table>
-                    </div>
-                    </section>
-                </div>    
-                <div id="Section3" align="center" style="display: none; margin-top:15% !important">
-			<img src="aries.png" alt="Mountain View"  style="width:100px;height:100px;margin-top:4%">
-                <h1>History of Items Bought</h1>
-                    <img class="toggle" src="icon-mobile.png" onclick="toggle_sidebar()" style="position: fixed; right: 10px; top: 10px" />
-                    <div id="sidebar" style="position: fixed; display: inline-block; top: 0px; height: 100%; width: 200px; left: -200px; background-color: black; transition: all 0.5s ease-in-out;">
-                    </div>
-                    <div style="text-align:center">
-                    <input type="button custom-button" class="btn btn btn-primary custom-button"  value="Add item" onclick="createNewToDo('dataTable3')"/>
-                    <input type="button custom-button" class="btn btn btn-primary custom-button"  value="Move selected to shopping bucket" onclick="removeFromServer('dataTable3')"/> 
-                    <br/><br/>
-                    <div id="dialog" title="Basic dialog" style = "display:none">
-                        <p>Item Name cannot be empty</p>
-                    </div>
-                    </div>
-                    <section>
-                    <div class="tbl-header">
-                    <table cellpadding="0" cellspacing="0" border="0" >
-                        <thead>
-                        <tr>
-                            <th style="width:20%">Check Item</th>
-                            <th style="width:30%">Your Inventory!!!  Items in your Kitchen</th>
-                        </tr>
-                        </thead>
-                    </table>
-                    </div>
-                    <div class="tbl-content">
-                    <table cellpadding="0" cellspacing="0" border="0" id="dataTable3">
-                    </table>
-                    </div>
-                    </section>
+                <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section3');$('#btn-menu').click();"><span>My Purchase History</span></a></li>
+            </ul>
+        </div>
+        <div name="section1 adjustheight" id="Section1" align="center" style="margin-top:15% !important">
+            <img src="aries.png" alt="Mountain View" style="width:100px;height:100px;margin-top:4%">
+            <h1>Your Kitchen</h1>
+            <div style="text-align:center">
+                <input type="button" class="btn btn btn-primary custom-button" value="Add item" onclick="createNewToDo('dataTable1')" />
+                <input type="button" class="btn btn btn-primary custom-button" value="Move selected to order" onclick="removeFromServer('dataTable1')" />
+                <input type="button" class="btn btn btn-primary custom-button" value="Voice Assistant" onclick="javascript:voicerec()" />
+                <!--<input type="button" class="btn btn btn-primary"  value="Deleted items" onclick="removeCompletedTasks('dataTable1')"/>-->
+
+                <br /><br />
+                <div id="dialog" title="Basic dialog" style="display:none">
+                    <p>Item Name cannot be empty</p>
                 </div>
-           
-        </body>
+            </div>
+            <section>
+                <div class="tbl-header">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th style="width:20%;">Select Items</th>
+                                <th style="width:50%; text-align: center">Items in Kitchen</th>
+                                <th style="width:30%">Quantity</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0" id="dataTable1"></table>
+                </div>
+            </section>
+        </div>
+
+        <div id="Section2" align="center" style="display: none; margin-top:15% !important">
+            <img src="aries.png" alt="Mountain View" style="width:100px;height:100px;margin-top:4%">
+            <h1>Shopping List</h1>
+            <img class="toggle" src="icon-mobile.png" onclick="toggle_sidebar()" style="position: fixed; right: 10px; top: 10px" />
+            <div id="sidebar" style="position: fixed; display: inline-block; top: 0px; height: 100%; width: 200px; left: -200px; background-color: black; transition: all 0.5s ease-in-out;">
+            </div>
+            <div style="text-align:center">
+
+                <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="placeItemsOrder('dataTable2')" />Place Order</a>
+                <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="removeCompletedTasks('dataTable2')" />Delete Items</a>
+                <br /><br />
+                <div id="dialog" title="Basic dialog" style="display:none">
+                    <p>Item Name cannot be empty</p>
+                </div>
+            </div>
+            <section>
+                <div class="tbl-header">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th style="width:20%">Select Items</th>
+                                <th style="width:50%">Shopping List</th>
+                                <th style="width:30%">Quantity</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0" id="dataTable2"></table>
+                </div>
+            </section>
+        </div>
+        <div id="Section3" align="center" style="display: none; margin-top:15% !important">
+            <img src="aries.png" alt="Mountain View" style="width:100px;height:100px;margin-top:4%">
+            <h1>History of Items Bought</h1>
+            <img class="toggle" src="icon-mobile.png" onclick="toggle_sidebar()" style="position: fixed; right: 10px; top: 10px" />
+            <div id="sidebar" style="position: fixed; display: inline-block; top: 0px; height: 100%; width: 200px; left: -200px; background-color: black; transition: all 0.5s ease-in-out;">
+            </div>
+            <div style="text-align:center">
+                <input type="button custom-button" class="btn btn btn-primary custom-button" value="Add item" onclick="createNewToDo('dataTable3')" />
+                <input type="button custom-button" class="btn btn btn-primary custom-button" value="Move selected to shopping bucket" onclick="removeFromServer('dataTable3')" />
+                <br /><br />
+                <div id="dialog" title="Basic dialog" style="display:none">
+                    <p>Item Name cannot be empty</p>
+                </div>
+            </div>
+            <section>
+                <div class="tbl-header">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                        <thead>
+                            <tr>
+                                <th style="width:20%">Check Item</th>
+                                <th style="width:30%">Your Inventory!!!  Items in your Kitchen</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="tbl-content">
+                    <table cellpadding="0" cellspacing="0" border="0" id="dataTable3"></table>
+                </div>
+            </section>
+        </div>
+</div>
+</body>
+
 </html>

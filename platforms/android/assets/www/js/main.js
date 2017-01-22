@@ -3,6 +3,7 @@ var url = "http://45.79.223.108:8042";
 var familyid = "23";
 
 function signInToServer(name) {
+        $('#loader').show();
     name = '{"familyName" : "myFamily1"}';
     $.ajax({
         type: "POST",
@@ -12,13 +13,17 @@ function signInToServer(name) {
         contentType: "json",
         success: function (result) {
             familyid = result[0]._id;
-            refreshFeed();
+             speechFeed();
+             setInterval(refreshFeed,5000);
+             $('#loader').hide();
         },
         error: function (xhr, status, error) {
+             alert( error + " Error in connection .Tap to try again");
+             signInToServer("myFamily1");
         },
         dataType: "json"
     });
-    setInterval(refreshFeed, 30000);
+    
 }
 
 function refreshFeed() {
@@ -35,7 +40,34 @@ function refreshFeed() {
             }
         },
         error: function (xhr, status, error) {
-            loadToDoList();
+                        alert(error + " . Tap to retry again");
+                        refreshFeed();          
+                },
+                dataType: "json"
+            });
+        }
+
+        function speechFeed(){
+            $.ajax({
+                type: "GET",
+                url: url + "/family/" + familyid,
+                crossDomain: true,
+                contentType: "json",
+                success: function (result) {
+                    if(result != null){
+                        var len = result.fridgeList.length;
+                        if( len > 0){
+                                speak(len  + " new items have been added since last update");
+                        } 
+                        updateLocalStorage(result);
+                    }else{
+                        loadToDoList();
+                    }
+                },
+                error: function(xhr,status,error){
+                        //loadToDoList();     
+                        alert(error + " . Tap to retry again");
+                        speechFeed()               
         },
         dataType: "json"
     });
@@ -60,6 +92,7 @@ function updateLocalStorage(result) {
                 barcode: fridgeList[i].product.barcode
             }
         }
+                
         window.localStorage.setItem("todoList", JSON.stringify(todoArray));
     }
 
@@ -114,13 +147,47 @@ function toggle_visibility(id1, id2, id3) {
 }
 
 function scan() {
+            var str = true;
     cordova.plugins.barcodeScanner.scan(function (result) {
-        addItemToKitchen(result.text, "dataTable1", true);
-        speak(result.text);
+                res = result;
+                addToServerBar(res,str);
     }, function (error) {
         alert(JSON.stringify(error));
+            });
+        }
+
+        function addToServerBar(res,str){
+            var r= res;
+            var s= str;
+            var data = generateDataForBar(res,str);
+                $.ajax({
+                type: "POST",
+                url: url + "/family/" + familyid + "/addToFridge",
+                data: JSON.stringify(data),
+                crossDomain: true,
+                contentType: "application/json",
+                success: function (result) {
+                    refreshFeed();
+                },
+                error: function(xhr,status,error){
+                    alert(error + ". Tap to try again");
+                    addToServerBar(r,s);
+                },
+                dataType: "json"
     });
 }
+
+        function generateDataForBar(res,str) {
+            var result = res;
+            return data = {
+                "itemList": [
+                {
+                    "barcode": result.text
+                }
+                ]
+            }
+        }
+
 
 function createNewToDo(div) {
     var kitchenList = {};
@@ -150,9 +217,10 @@ function addItemToKitchen(todo, div, isbar) {
         barcode: ""
     };
     if (div != null && div != "") {
+                speak(todo);
         addToServer(kitchenList, "");
     }
-    speak(todo);
+            
 }
 
 function addItemToKitchenWithOCR(todo, bar) {
@@ -165,32 +233,42 @@ function addItemToKitchenWithOCR(todo, bar) {
         }
         ]
     }
-    alert(JSON.stringify(data));
     $.ajax({
         type: "POST",
         url: url + "/family/" + familyid + "/addToFridge",
-        data: JSON.stringify(data),
+                data: data,
         crossDomain: true,
-        dataType: "json",
+				dataType: "application/json",
         success: function (result) {
+                    speak("Item added");
         },
         error: function (xhr, status, error) {
+                    speak("Error saving item");
         },
         dataType: "json"
     });
 }
 
-
-
 function generateData(res, str) {
     var result = res;
-    data = {
-        itemList: [
-        {
-            name: result.text
-        }
-        ]
-    }
+            if(str == "voice"){
+                data = {
+                    itemList: [
+                    {
+                        name: result
+                    }
+                 ]
+                }
+            }else{
+                data = {
+                    itemList: [
+                    {
+                        name: result.text
+                    }
+                    ]
+                }
+            }
+			
     return data;
 }
 
@@ -211,9 +289,7 @@ function modifyOnServer(cell) {
     var str = $(cell).parent().parent().find("td:first").find('input')[0].name;
     var res = $(cell).parent().parent().find("td:eq(1)").find('label')[0].text;
     var quantity = $(cell).parent().parent().find("td:eq(2)").find('input')[0].value;
-
-    console.log($(cell).parent().parent().find("td:first").find('input'));
-
+            
     if (quantity == null || quantity == "") {
         quantity = 1;
     }
@@ -248,8 +324,8 @@ function generateDataForShopping(res, str) {
     return d;
 }
 
-function removeFromServer() {
-    var res = getAllCheckedBarCodes("dataTable1")
+        function removeFromServer(div){
+            var res = getAllCheckedBarCodes(div)
     var data = generateDataForShopping(res);
     $.ajax({
         type: "POST",
@@ -261,6 +337,7 @@ function removeFromServer() {
             updateLocalStorage(result);
         },
         error: function (xhr, status, error) {
+                alert(error + "result");
         },
         dataType: "json"
     });
@@ -271,14 +348,12 @@ function getAllCheckedBarCodes(div) {
     $('#' + div + ' input:checked').each(function () {
         selected.push($(this).attr('name'));
     });
-    console.log(selected);
     return selected;
 }
 
 
 function generateDataForMove(res, str) {
     var result = res;
-    alert(JSON.stringify(result));
     data = {
         "itemList": [
         {
@@ -302,6 +377,7 @@ function addToServer(res, str) {
             $("#loader").hide();
         },
         error: function (xhr, status, error) {
+                    $("#loader").hide();
         },
         dataType: "json"
     });
@@ -442,7 +518,6 @@ function saveToDoList(div) {
 
     var table = document.getElementById(div);
     var rowCount = table.rows.length;
-    console.log(rowCount);
     if (rowCount != 0) {
         // loop through all rows of the table
         for (var i = 0; i < rowCount; i++) {
@@ -559,11 +634,11 @@ function toggle_sidebar() {
 }
 
 function onLoad() {
-    document.addEventListener("deviceready", onDeviceReady, false);
+   // document.addEventListener("deviceready", onDeviceReady, false);
 }
 
 function onDeviceReady() {
-    // window.plugins.tts.startup(startupWin, fail);
+           // window.plugins.tts.startup(startupWin, fail);
     // pictureSource = navigator.camera.PictureSourceType;
     //destinationType = navigator.camera.DestinationType;
 }
@@ -616,16 +691,30 @@ function fail(result) {
 }
 
 function speak(text) {
-    /* TTS.speak('I have Successfully added ' + text, function () {     
-                 });*/
+            TTS.speak(text, function () {     
+             });
 }
 
+        var l =0 ;
 function voicerec() {
     var maxMatches = 1;
-    var promptString = "Speak now"; // optional
+            var promptString = "Add your product though voic e.g try 'ADD APPLES'"; // optional
     var language = "en-US";         // optional
+            
     window.plugins.speechrecognizer.startRecognize(function (result) {
-        alert(result);
+                    if(result != null && result.toString().trim().split(" ")[0] != null &&  result.toString().trim().split(" ")[1] != null && result.toString().trim().split(" ")[0] == "add"){
+                        addToServer(result.toString().trim().split(" ")[1],"voice");
+                        speak("Adding " + result.toString().trim().split(" ")[1] + " to your kitchen list");
+                    }else{
+                        if(l< 3){
+                            l++;
+                            speak("I didn't quite get you. Please try again");
+                            voicerec();
+                        }else{
+                            speak("Sorry, I am unable to help you right now.");
+                            l = 0;
+                        }
+                    }
     }, function (errorMessage) {
         console.log("Error message: " + errorMessage);
     }, maxMatches, promptString, language);

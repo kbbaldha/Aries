@@ -11,6 +11,8 @@ function onDeviceReady2() {
     pictureSource = navigator.camera.PictureSourceType;
     destinationType = navigator.camera.DestinationType;
 
+    window.plugins.tts.startup(startupWin, fail);
+
     recognition = new SpeechRecognition();
     recognition.onresult = function(event) {
         if (event.results.length > 0) {
