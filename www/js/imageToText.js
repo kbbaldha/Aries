@@ -1,6 +1,7 @@
 var pictureSource;   // picture source
 var destinationType; // sets the format of returned value 
 var imageText;
+var bar = null;
 // Wait for PhoneGap to connect with the device
 //
 document.addEventListener("deviceready", onDeviceReady2, false);
@@ -10,6 +11,10 @@ function onDeviceReady2() {
     pictureSource = navigator.camera.PictureSourceType;
 
     destinationType = navigator.camera.DestinationType;
+
+     TTS.speak('I have Successfully added ', function () {
+                    }, function (reason) {
+                    });
 }
 
 function getTextFromImage(imageURI) {
@@ -29,8 +34,7 @@ function getTextFromImage(imageURI) {
         ]
     }
     $('#loader').show();
-   // alert(imageURI);
-    //$.support.cors = true;
+
      $.ajax({
          type: "POST",
          url: "https://vision.googleapis.com/v1/images:annotate?key=AIzaSyDHanX2UO4E348H7QjyXD2bZnL_UGQ1_6Y",
@@ -38,17 +42,16 @@ function getTextFromImage(imageURI) {
          crossDomain: true,
          contentType: "json",
          success: function (result) {
-             //alert(result.responses[0].textAnnotations[0].description);
              try {
                  $('#loader').hide();
                  imageText = result.responses[0].textAnnotations[0].description;
-                 //document.getElementById('result').innerHTML = imageText;
-
+                //alert("Edited Data" + bar);
                 var editedData = prompt("Please edit and enhance the information", imageText);
-                if (editedData != null) {
+                if (editedData != null && bar == null) {
                     
-                    addToServer({ text: editedData });
-                    addItemToKitchen(editedData, "datatable1");
+                    addItemToKitchen(editedData,"dataTable1");
+                }else{
+                    addItemToKitchenWithOCR(editedData, bar);
                 }
              }
              catch (err) {
@@ -56,7 +59,6 @@ function getTextFromImage(imageURI) {
              }
          },
          error: function(xhr,status,error){
-             //console.log(result);
              alert(status);
          },
          dataType: "json"
@@ -65,22 +67,19 @@ function getTextFromImage(imageURI) {
 }
 
 function onPhotoURISuccess(imageURI) {
-
      getTextFromImage(imageURI);
 }
 
 
-function getPhoto(source) {
-    // Retrieve image file location from specified source
-    //alert(source);;
-    
+function getPhoto(source,b) {
+    if(b != null){
+        bar = b;
+    }
     //getPhotoURI(pictureSource.PHOTOLIBRARY, onPhotoURISuccess);
-	getPhotoURI(source, onPhotoURISuccess);
-    
+    getPhotoURI(source, onPhotoURISuccess);    
 }
 
 function getPhotoURI(source, callBack) {
-   // alert('getphotouri');
     navigator.camera.getPicture(callBack, onFail, {
         quality: 50,
         destinationType: destinationType.DATA_URL,
@@ -89,6 +88,7 @@ function getPhotoURI(source, callBack) {
 
  }
  
+
 function onFail(message) {
     alert('Failed because: ' + message);
 }
