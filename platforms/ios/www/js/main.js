@@ -1,4 +1,4 @@
-    var url = "http://10.136.34.148:8042";
+    var url = "http://45.79.223.108:8042";
     var familyid = "";
 
     function signInToServer(name){
@@ -11,7 +11,7 @@
          contentType: "json",
          success: function (result) {
              familyid = result[0]._id; 
-             refreshFeed();
+             speechFeed();
          },
          error: function(xhr,status,error){
          },
@@ -28,6 +28,30 @@
                 contentType: "json",
                 success: function (result) {
                     if(result != null){
+                        updateLocalStorage(result);
+                    }else{
+                        loadToDoList();
+                    }
+                },
+                error: function(xhr,status,error){
+                        loadToDoList();                    
+                },
+                dataType: "json"
+            });
+        }
+
+        function speechFeed(){
+            $.ajax({
+                type: "GET",
+                url: url + "/family/" + familyid,
+                crossDomain: true,
+                contentType: "json",
+                success: function (result) {
+                    if(result != null){
+                        var len = result.fridgeList.length;
+                        if( len > 0){
+                                speak(len  + " new items have been added since last update");
+                        } 
                         updateLocalStorage(result);
                     }else{
                         loadToDoList();
@@ -59,6 +83,7 @@
                         barcode : fridgeList[i].product.barcode
                     }
                 }
+                
                 window.localStorage.setItem("todoList", JSON.stringify(todoArray));
             }
 
@@ -149,9 +174,10 @@
                     barcode:""
             };
             if(div != null && div != ""){
+                speak(todo);
 			    addToServer(kitchenList,"");
             }
-            speak(todo);
+            
         }
 
         function addItemToKitchenWithOCR(todo,bar){
@@ -164,7 +190,6 @@
 				}
 				]
 			}
-            alert(JSON.stringify(data));
 			$.ajax({
 				type: "POST",
 				url: url + "/family/" + familyid + "/addToFridge",
@@ -210,8 +235,6 @@
             var str = $(cell).parent().parent().find("td:first").find('input')[0].name;
             var res = $(cell).parent().parent().find("td:eq(1)").find('label')[0].text;
             var quantity = $(cell).parent().parent().find("td:eq(2)").find('input')[0].value;
-
-            console.log($(cell).parent().parent().find("td:first").find('input'));
             
             if(quantity == null || quantity == ""){
                 quantity = 1;
@@ -270,7 +293,6 @@
             $('#' + div + ' input:checked').each(function() {
                 selected.push($(this).attr('name'));
             });
-            console.log(selected);
             return selected;
         }
 
@@ -301,6 +323,7 @@
                     $("#loader").hide();
 				},
 				error: function(xhr,status,error){
+                    $("#loader").hide();
 				},
 				dataType: "json"
 			});
@@ -441,7 +464,6 @@
 
             var table = document.getElementById(div);
             var rowCount = table.rows.length;
-            console.log(rowCount);
             if (rowCount != 0) {
                 // loop through all rows of the table
                 for (var i = 0; i < rowCount; i++) {
