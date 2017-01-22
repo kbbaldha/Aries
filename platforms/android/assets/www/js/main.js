@@ -1,5 +1,6 @@
-    var url = "http://10.136.34.148:8042";
-    var familyid = "";
+    //var url = "http://10.136.34.148:8042";
+	var url = "http://45.79.223.108:8042";
+    var familyid = "23";
 
     function signInToServer(name){
          name = '{"familyName" : "myFamily1"}';
@@ -563,7 +564,7 @@
             }
         
         function onDeviceReady() {
-            window.plugins.tts.startup(startupWin, fail);
+           // window.plugins.tts.startup(startupWin, fail);
             pictureSource = navigator.camera.PictureSourceType;
             destinationType = navigator.camera.DestinationType;
         }
@@ -616,8 +617,8 @@
         }
         
         function speak(text) {
-        TTS.speak('I have Successfully added ' + text, function () {     
-                    });
+       /* TTS.speak('I have Successfully added ' + text, function () {     
+                    });*/
         }
 
         function voicerec() {
