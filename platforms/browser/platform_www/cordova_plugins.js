@@ -101,6 +101,28 @@ module.exports = [
         "clobbers": [
             "SpeechGrammarList"
         ]
+    },
+    {
+        "file": "plugins/phonegap-plugin-barcodescanner/www/barcodescanner.js",
+        "id": "phonegap-plugin-barcodescanner.BarcodeScanner",
+        "pluginId": "phonegap-plugin-barcodescanner",
+        "clobbers": [
+            "cordova.plugins.barcodeScanner"
+        ]
+    },
+    {
+        "file": "plugins/phonegap-plugin-barcodescanner/src/browser/BarcodeScannerProxy.js",
+        "id": "phonegap-plugin-barcodescanner.BarcodeScannerProxy",
+        "pluginId": "phonegap-plugin-barcodescanner",
+        "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-speechrecognizer/SpeechRecognizer.js",
+        "id": "cordova-plugin-speechrecognizer.SpeechRecognizer",
+        "pluginId": "cordova-plugin-speechrecognizer",
+        "clobbers": [
+            "plugins.speechrecognizer"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -110,7 +132,9 @@ module.exports.metadata =
     "cordova-plugin-compat": "1.1.0",
     "cordova-plugin-camera": "2.3.1",
     "cordova-plugin-tts": "0.2.3",
-    "org.apache.cordova.speech.speechrecognition": "0.1.2"
+    "org.apache.cordova.speech.speechrecognition": "0.1.2",
+    "phonegap-plugin-barcodescanner": "6.0.5",
+    "cordova-plugin-speechrecognizer": "1.0.0"
 }
 // BOTTOM OF METADATA
 });

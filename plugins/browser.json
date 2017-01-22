@@ -18,6 +18,12 @@
         },
         "org.apache.cordova.speech.speechrecognition": {
             "PACKAGE_NAME": "com.example.abhinigam.aries"
+        },
+        "phonegap-plugin-barcodescanner": {
+            "PACKAGE_NAME": "com.example.abhinigam.aries"
+        },
+        "cordova-plugin-speechrecognizer": {
+            "PACKAGE_NAME": "com.example.abhinigam.aries"
         }
     },
     "dependent_plugins": {
