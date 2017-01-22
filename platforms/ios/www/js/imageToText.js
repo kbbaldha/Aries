@@ -3,8 +3,8 @@ var destinationType; // sets the format of returned value
 var imageText;
 // Wait for PhoneGap to connect with the device
 //
-//document.addEventListener("deviceready", onDeviceReady2, false);
-// PhoneGap is ready to be used!
+document.addEventListener("deviceready", onDeviceReady2, false);
+ //PhoneGap is ready to be used!
 //
 function onDeviceReady2() {
     pictureSource = navigator.camera.PictureSourceType;
@@ -28,7 +28,7 @@ function getTextFromImage(imageURI) {
           }
         ]
     }
-
+    $('#loader').show();
    // alert(imageURI);
     //$.support.cors = true;
      $.ajax({
@@ -39,17 +39,20 @@ function getTextFromImage(imageURI) {
          contentType: "json",
          success: function (result) {
              //alert(result.responses[0].textAnnotations[0].description);
-             try{
+             try {
+                 $('#loader').hide();
                  imageText = result.responses[0].textAnnotations[0].description;
-                 document.getElementById('result').innerHTML = imageText;
+                 //document.getElementById('result').innerHTML = imageText;
 
                 var editedData = prompt("Please edit and enhance the information", imageText);
                 if (editedData != null) {
-                    addItemToKitchen(editedData);
+                    
+                    addToServer({ text: editedData });
+                    addItemToKitchen(editedData, "datatable1");
                 }
              }
              catch (err) {
-                 alert(JSON.stringify(result));
+                 alert(err);
              }
          },
          error: function(xhr,status,error){
@@ -69,12 +72,22 @@ function onPhotoURISuccess(imageURI) {
 
 function getPhoto(source) {
     // Retrieve image file location from specified source
-    navigator.camera.getPicture(onPhotoURISuccess, onFail, {
+    //alert(source);;
+    
+    //getPhotoURI(pictureSource.PHOTOLIBRARY, onPhotoURISuccess);
+	getPhotoURI(source, onPhotoURISuccess);
+    
+}
+
+function getPhotoURI(source, callBack) {
+   // alert('getphotouri');
+    navigator.camera.getPicture(callBack, onFail, {
         quality: 50,
         destinationType: destinationType.DATA_URL,
         sourceType: source
     });
-}
+
+ }
  
 function onFail(message) {
     alert('Failed because: ' + message);

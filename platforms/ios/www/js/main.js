@@ -1,4 +1,5 @@
     var url = "http://10.136.34.148:8042";
+	//var url = "http://45.79.223.108:8042";
     var familyid = "";
 
     function signInToServer(name){
@@ -87,13 +88,13 @@
             $("#" + id1).show();
             }
 
-            document.addEventListener('deviceready', function () {
+            /*document.addEventListener('deviceready', function () {
                 // basic usage
                 TTS
                     .speak('I have Successfully added ', function () {
                     }, function (reason) {
                     });
-            }, false);
+            }, false);*/
 
 
             function scan(){
@@ -132,10 +133,39 @@
                     Quantity: 1,
                     barcode:""
             };
-            addTableRow(kitchenList, false, div);
+			addToServer(kitchenList,"");
+			refreshFeed();
+            //addTableRow(kitchenList, false, div);
             speak(todo);
         }
-
+		function generateData(res,str) {
+			var result = res;
+			data = {
+				itemList: [
+				{
+					name: result.text
+				}
+				]
+			}
+			return data;
+		}
+		
+		
+		function addToServer(res,str){
+			var data = generateData(res,str);
+			$.ajax({
+				type: "POST",
+				url: url + "/family/" + familyid + "/addToFridge",
+				data: data,
+				crossDomain: true,
+				dataType: "json",
+				success: function (result) {
+				},
+				error: function(xhr,status,error){
+				},
+				dataType: "json"
+			});
+		}
         var rowID = 0;
 
         function addTableRow(kitchenList, appIsLoading, div) {
