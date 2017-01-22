@@ -12,9 +12,9 @@ function onDeviceReady2() {
 
     destinationType = navigator.camera.DestinationType;
 
-     TTS.speak('I have Successfully added ', function () {
+    /* TTS.speak('I have Successfully added ', function () {
                     }, function (reason) {
-                    });
+                    });*/
 }
 
 function getTextFromImage(imageURI) {

@@ -4,7 +4,7 @@
   );
 
 function getTags(source) {
-	
+    //getPhotoURI(pictureSource.PHOTOLIBRARY, getImageTags);
     getPhotoURI(source,getImageTags);
 }
 var tags;
@@ -28,24 +28,31 @@ function bindTagClick() {
         //console.log($(this).text());
         var txt = $(this).text();
         $(this).remove();
-        addItemToKitchen(txt);
+        //addItemToKitchen(txt);
+		addToServer({text:txt});
        
     });
 }
 
+
+
 function renderTags(tags) {
-    var str = '<button id="closeButton" type="button" style="margin-top:27px" class="btn btn-danger btn-lg  pull-right">X</button>';
+    var str = '<button id="closeButton" type="button" style="margin-top:37px" class="btn btn-danger btn-lg  pull-right">X</button>';
    // str+=  '<ul class="list-group">';
     for (var i = 0; i < tags.length; i++) {
         //str = str + "<div>" + tags[i].name + "</div>";
-        
-        str = str + '<button type="button" class="btn btn-primary btn-lg btn-block tag">' + tags[i].name + '</button>';
+        if (i % 2 == 1) {
+            str = str + '<button type="button" class="btn btn-primary btn-lg btn-block custom-button tag pull-right">' + tags[i].name + '</button>';
+        }
+        else {
+            str = str + '<button type="button" class="btn btn-primary btn-lg btn-block custom-button tag">' + tags[i].name + '</button>';
+        }
         //str = str + '<li class="list-group-item tag">' + tags[i].name + '</li>';
     }
    // str+="</ul>";
     document.getElementById('imageTags').innerHTML = str;
     $("#imageTagsParent").show();
-    $("#closeButton").on("click", function () { $("#imageTagsParent").hide(); });
+    $("#closeButton").on("click", function () { $("#imageTagsParent").hide(); $('#loader').hide(); });
     bindTagClick();
    
   

@@ -34,6 +34,8 @@ function bindTagClick() {
     });
 }
 
+
+
 function renderTags(tags) {
     var str = '<button id="closeButton" type="button" style="margin-top:37px" class="btn btn-danger btn-lg  pull-right">X</button>';
    // str+=  '<ul class="list-group">';
@@ -50,7 +52,7 @@ function renderTags(tags) {
    // str+="</ul>";
     document.getElementById('imageTags').innerHTML = str;
     $("#imageTagsParent").show();
-    $("#closeButton").on("click", function () { $("#imageTagsParent").hide(); });
+    $("#closeButton").on("click", function () { $("#imageTagsParent").hide(); $('#loader').hide(); });
     bindTagClick();
    
   
