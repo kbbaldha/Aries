@@ -236,12 +236,12 @@
             var data = "";
             var d= "";
             if(res != null){
-                var outer ="{itemList: ["; 
+                var outer ='{"itemList": ['; 
                 for(i =0 ; i < res.length-1;i++){
-                    data += "{barcode : " + res[i] + "},";
+                    data += '{"barcode" : "' + res[i] + '"},';
                 }
-                data += "{barcode : " + res[res.length-1] + "}"
-                var later = " ]}";
+                data += '{"barcode" :"'  + res[res.length-1] + '"}'
+                var later = ' ]}';
                 d = outer + data + later;
             }      
 			return d;
@@ -250,21 +250,20 @@
         function removeFromServer(){
             var res = getAllCheckedBarCodes("dataTable1")
             var data = generateDataForShopping(res);
-            console.log(data);
-                $.ajax({
-                type: "POST",
-                url: url + "/family/" + familyid + "/addToGarbage",
-                data: JSON.stringify(data),
-                crossDomain: true,
-                contentType: "json",
-                success: function (result) {
-                    updateLocalStorage(result);
-                },
-                error: function(xhr,status,error){
-                },
-                dataType: "json"
-            });
-        }
+            $.ajax({
+            type: "POST",
+            url: url + "/family/" + familyid + "/addToGarbage",
+            data: data,
+            crossDomain: false,
+            contentType: "application/json",
+            success: function (result) {
+                updateLocalStorage(result);
+            },
+            error: function(xhr,status,error){
+            },
+            dataType: "json"
+        });
+    }
 
         function getAllCheckedBarCodes(div){
             var selected = [];
