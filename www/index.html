@@ -61,11 +61,12 @@
               <li><a href="#" class="icon icon-search" onclick="toggle_visibility('Section3');$('#btn-menu').click();"><span>My Purchase History</span></a></li>
             </ul>
           </div>
-            <div name = "section1 adjustheight" id="Section1" style="margin-top:5% !important">
+            <div name = "section1 adjustheight" id="Section1" align="center" style="margin-top:15% !important">
+					<img src="aries.png" alt="Mountain View"  style="width:100px;height:100px;margin-top:4%">
                     <h1>Your Kitchen</h1>
-                    <div style="text-align:center">
-                    <input type="button" class="btn btn btn-primary"  value="Add item" onclick="createNewToDo('dataTable1')"/>
-                    <input type="button" class="btn btn btn-primary"  value="Move selected to order" onclick="removeFromServer()"/>
+                    <div  style="text-align:center" >
+                    <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="createNewToDo('dataTable1')" >Add Item</a>
+                    <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="removeFromServer()"/>Move selected to order</a>
                     <!--<input type="button" class="btn btn btn-primary"  value="Deleted items" onclick="removeCompletedTasks('dataTable1')"/>-->
 					
                     <br/><br/>
@@ -92,15 +93,16 @@
                     </section>
             </div>
 
-            <div id="Section2" style="display: none; margin-top:5% !important">
+            <div id="Section2" align="center" style="display: none; margin-top:15% !important">
+				<img src="aries.png" alt="Mountain View"   style="width:100px;height:100px;margin-top:4%">
                 <h1>Shopping List</h1>
                     <img class="toggle" src="icon-mobile.png" onclick="toggle_sidebar()" style="position: fixed; right: 10px; top: 10px" />
                     <div id="sidebar" style="position: fixed; display: inline-block; top: 0px; height: 100%; width: 200px; left: -200px; background-color: black; transition: all 0.5s ease-in-out;">
                     </div>
                     <div style="text-align:center">
                     
-                    <input type="button" class="btn btn btn-primary"  value="Place Order" onclick="placeItemsOrder('datatable2')"/>
-                    <input type="button" class="btn btn btn-primary"  value="Delete items" onclick="removeCompletedTasks('dataTable2')"/>
+                    <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="createNewToDo('dataTable2')"/>Place Order</a>
+                    <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="removeCompletedTasks('dataTable2')"/>Delete Items</a>
                     <br/><br/>
                     <div id="dialog" title="Basic dialog" style = "display:none">
                         <p>Item Name cannot be empty</p>
@@ -124,14 +126,15 @@
                     </div>
                     </section>
                 </div>    
-                <div id="Section3" style="display: none; margin-top:5% !important">
+                <div id="Section3" align="center" style="display: none; margin-top:15% !important">
+			<img src="aries.png" alt="Mountain View"  style="width:100px;height:100px;margin-top:4%">
                 <h1>History of Items Bought</h1>
                     <img class="toggle" src="icon-mobile.png" onclick="toggle_sidebar()" style="position: fixed; right: 10px; top: 10px" />
                     <div id="sidebar" style="position: fixed; display: inline-block; top: 0px; height: 100%; width: 200px; left: -200px; background-color: black; transition: all 0.5s ease-in-out;">
                     </div>
                     <div style="text-align:center">
-                    <input type="button" class="btn btn btn-primary"  value="Add item" onclick="createNewToDo('dataTable3')"/>
-                    <input type="button" class="btn btn btn-primary"  value="Move selected to order" onclick="createNewToDo('dataTable3')"/>
+                    <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="createNewToDo('dataTable3')"/>Add Item</a>
+                    <a class="custom-button" style="padding-left:10px; padding-right:10px" onclick="createNewToDo('dataTable3')"/> Move to Order</a>
                     
                     <br/><br/>
                     <div id="dialog" title="Basic dialog" style = "display:none">
