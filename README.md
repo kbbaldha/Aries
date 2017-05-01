@@ -1,6 +1,10 @@
 # Aries
+<h4><b>A personal assistant for your kitchen, which helps you automatically manage the kitchen items(veggies, groceries etc) to be ordered automatically for your family.</b></h4>
 
-A personal assistant for your kitchen, which helps you automatically manage the kitchen items(veggies, groceries etc) to be ordered automatically for your family.
+https://devpost.com/software/aries_server_nodejs
+
+![alt text](https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/software_photos/000/462/113/datas/gallery.jpg)
+
 
 The idea started with the pain point of going to buy groceries every week while living as bachelors and studying at University of Florida. The pace at which the applications of **AI-Computer Vision** being developed, but we were still struggling to keep track of everything required in the kitchen, making that grocery list and somehow still forgetting one or two things to buy. Why can't this be solved using the technologies, API's and the knowledge which we have to make our as well as the life of other's suffering through the same thing simple.
 
@@ -19,3 +23,18 @@ Now a personal assistant cannot be just a notification API in the Alexa, and Goo
 Most important feature was of connecting to the grocery store or the store to automatically order from. This was possible with the Amazon API, hard to crack the nut to add items to its cart with a hell lot of security keys required by Amazon, but we were able to achieve success at last.
 
 Now that **Aries** is ready to become your small personal assistant, be there to have an experience of a simple life with it at the DEMO.
+
+
+# Built With
+javascript
+css
+node.js
+mongodb
+rest
+phonegap
+html5
+apache
+amazon-web-services
+clarifai
+ispeech-text-to-speech
+barcode-scanner
