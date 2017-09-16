@@ -1,7 +1,7 @@
 # Aries
 <h4><b>A personal assistant for your kitchen, which helps you automatically manage the kitchen items(veggies, groceries etc) to be ordered automatically for your family.</b></h4>
 
-https://devpost.com/software/aries_server_nodejs
+https://devpost.com/software/aries_server_nodejs 
 
 ![alt text](https://challengepost-s3-challengepost.netdna-ssl.com/photos/production/software_photos/000/462/113/datas/gallery.jpg)
 
